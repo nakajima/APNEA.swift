@@ -13,6 +13,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird", branch: "main"),
 		.package(url: "https://github.com/swift-server-community/APNSwift", branch: "main"),
+		.package(url: "https://github.com/Flight-School/MessagePack", branch: "master"),
 	],
 	targets: [
 		.target(
@@ -32,7 +33,9 @@ let package = Package(
 			name: "Server",
 			dependencies: [
 				"APNEACore",
+				"MessagePack",
 				.product(name: "Hummingbird", package: "hummingbird"),
+				.product(name: "HummingbirdJobs", package: "hummingbird"),
 				.product(name: "APNS", package: "APNSwift"),
 			]
 		),

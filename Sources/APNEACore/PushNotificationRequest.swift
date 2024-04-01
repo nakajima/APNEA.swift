@@ -14,7 +14,7 @@ public enum Message: Codable, Sendable {
 
 public struct PushNotificationRequest: Codable, Sendable {
 	public struct Payload: Encodable, Sendable {
-		public init() { }
+		public init() {}
 	}
 
 	public var deviceToken: String
@@ -39,30 +39,30 @@ public struct PushNotificationRequest: Codable, Sendable {
 		let pushTypeConfiguration = APNSPushType.Configuration(rawValue: pushTypeString)!
 		self.pushType = switch pushTypeConfiguration {
 		case .alert: .alert
-		case .background:	.background
+		case .background: .background
 		case .location: .location
 		case .voip: .voip
-		case .complication:	.complication
-		case .fileprovider:	.fileprovider
+		case .complication: .complication
+		case .fileprovider: .fileprovider
 		case .mdm: .mdm
 		case .liveactivity: .liveactivity
 		}
 
 		if let expirationInt = try values.decodeIfPresent(Int.self, forKey: .expiration) {
-			expiration = APNSNotificationExpiration.timeIntervalSince1970InSeconds(expirationInt)
+			self.expiration = APNSNotificationExpiration.timeIntervalSince1970InSeconds(expirationInt)
 		} else {
-			expiration = APNSNotificationExpiration.none
+			self.expiration = APNSNotificationExpiration.none
 		}
 
 		if let priorityInt = try values.decodeIfPresent(Int.self, forKey: .priority) {
-			priority = priorityInt == 5 ? .consideringDevicePower : .immediately
+			self.priority = priorityInt == 5 ? .consideringDevicePower : .immediately
 		}
 
-		apnsID = try values.decodeIfPresent(UUID.self, forKey: .apnsID)
-		topic = try values.decode(String.self, forKey: .topic)
-		collapseID = try values.decodeIfPresent(String.self, forKey: .collapseID)
-		message = try values.decode(Message.self, forKey: .message)
-		sendAt = try values.decode(Date.self, forKey: .sendAt)
+		self.apnsID = try values.decodeIfPresent(UUID.self, forKey: .apnsID)
+		self.topic = try values.decode(String.self, forKey: .topic)
+		self.collapseID = try values.decodeIfPresent(String.self, forKey: .collapseID)
+		self.message = try values.decode(Message.self, forKey: .message)
+		self.sendAt = try values.decode(Date.self, forKey: .sendAt)
 	}
 
 	public func encode(to encoder: any Encoder) throws {

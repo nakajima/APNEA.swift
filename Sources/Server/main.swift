@@ -10,11 +10,22 @@ import APNS
 import APNSCore
 import Crypto
 import Foundation
-import Hummingbird
+@preconcurrency import Hummingbird
+import NIOCore
+
+struct ContextProvider: RouterMiddleware {
+	let scheduler: PushScheduler
+
+	func handle(_ request: Request, context: APNEAContext, next: (Request, APNEAContext) async throws -> Response) async throws -> Response {
+		context.scheduler = scheduler
+		return try await next(request, context)
+	}
+}
 
 final class App {
-	let router = Router()
 	let apns: APNSClient<JSONDecoder, JSONEncoder>
+	let scheduler: PushScheduler
+	var schedulerTask: Task<Void, Never>?
 
 	static var privateKey: P256.Signing.PrivateKey = {
 		do {
@@ -31,7 +42,7 @@ final class App {
 	}
 
 	init() {
-		self.apns = APNSClient(
+		let apns = APNSClient(
 			configuration: .init(
 				authenticationMethod: .jwt(
 					privateKey: App.privateKey,
@@ -44,51 +55,29 @@ final class App {
 			responseDecoder: JSONDecoder(),
 			requestEncoder: JSONEncoder()
 		)
+
+		self.apns = apns
+		self.scheduler = PushScheduler(apns: apns)
+		self.schedulerTask = Task.detached {
+			while true {
+				await self.scheduler.run()
+				try? await Task.sleep(for: .seconds(1))
+			}
+		}
 	}
 
 	func run() async throws {
+		let router = Router(context: APNEAContext.self)
+
 		router.middlewares.add(LogRequestsMiddleware(.notice))
+		router.middlewares.add(ContextProvider(scheduler: scheduler))
 
 		router.get("ping") { _, _ -> String in
 			"PONG"
 		}
 
 		router.post("schedule") { request, context -> String in
-			do {
-				let pushNotificationRequestData = try await request.body.collect(upTo: context.maxUploadSize)
-				let pushNotificationRequest = try JSONDecoder().decode(PushNotificationRequest.self, from: pushNotificationRequestData)
-
-				// Umm use an actual scheduler here
-				if let sendAt = pushNotificationRequest.sendAt, sendAt > Date() {
-					try! await Task.sleep(for: .seconds(sendAt.timeIntervalSince(Date())))
-				}
-
-				func send(message: some APNSMessage) async throws {
-					_ = try await self.apns.send(APNSRequest(
-						message: message,
-						deviceToken: pushNotificationRequest.deviceToken,
-						pushType: pushNotificationRequest.pushType,
-						expiration: pushNotificationRequest.expiration,
-						priority: pushNotificationRequest.priority,
-						apnsID: pushNotificationRequest.apnsID,
-						topic: pushNotificationRequest.topic,
-						collapseID: pushNotificationRequest.collapseID
-					))
-				}
-
-				switch pushNotificationRequest.toAPNS() {
-				case let n as APNSAlertNotification<PushNotificationRequest.Payload>:
-					try await send(message: n)
-				case let n as APNSBackgroundNotification<PushNotificationRequest.Payload>:
-					try await send(message: n)
-				default:
-					fatalError("Unsupported message type: \(pushNotificationRequest.message)")
-				}
-			} catch {
-				print("ERROR SCHEDULING: \(error)")
-			}
-
-			return "OK"
+			try await SchedulerRoute().handle(request: request, context: context)
 		}
 
 		let application = Application(
