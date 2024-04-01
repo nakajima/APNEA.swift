@@ -64,14 +64,12 @@ actor PushScheduler {
 		}
 	}
 
-	func schedule(occurrences: Int, interval: TimeInterval, nextPush: Date, payload: Data) async {
-		logger.info("scheduling \(nextPush.formatted())")
-
+	func schedule(_ request: PushNotificationRequest) async throws {
 		let schedule = ScheduledPush(
-			occurrences: occurrences,
-			interval: interval,
-			nextPush: nextPush,
-			payload: payload
+			occurrences: request.schedule.occurrences,
+			interval: request.schedule.interval,
+			nextPush: request.schedule.sendAt,
+			payload: try JSONEncoder().encode(request)
 		)
 
 		await handle(id: schedule.id, schedule: schedule)

@@ -12,6 +12,23 @@ public enum Message: Codable, Sendable {
 	case background, alert(String)
 }
 
+public struct PushNotificationSchedule: Sendable, Codable {
+	public var occurrences: Int
+	public var interval: TimeInterval
+	public var sendAt: Date
+
+	public static let immediate = PushNotificationSchedule(occurrences: 1, interval: 0, sendAt: .distantPast)
+	public static func once(on date: Date) -> PushNotificationSchedule {
+		PushNotificationSchedule(occurrences: 1, interval: 0, sendAt: date)
+	}
+
+	public init(occurrences: Int, interval: TimeInterval, sendAt: Date) {
+		self.occurrences = occurrences
+		self.interval = interval
+		self.sendAt = sendAt
+	}
+}
+
 public struct PushNotificationRequest: Codable, Sendable {
 	public struct Payload: Encodable, Sendable {
 		public init() {}
@@ -25,10 +42,10 @@ public struct PushNotificationRequest: Codable, Sendable {
 	public var topic: String
 	public var collapseID: String?
 	public var message: Message
-	public var sendAt: Date?
+	public var schedule: PushNotificationSchedule
 
 	enum CodingKeys: String, CodingKey {
-		case deviceToken, pushType, expiration, priority, apnsID, topic, collapseID, message, sendAt
+		case deviceToken, pushType, expiration, priority, apnsID, topic, collapseID, message, schedule
 	}
 
 	public init(from decoder: any Decoder) throws {
@@ -62,7 +79,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		self.topic = try values.decode(String.self, forKey: .topic)
 		self.collapseID = try values.decodeIfPresent(String.self, forKey: .collapseID)
 		self.message = try values.decode(Message.self, forKey: .message)
-		self.sendAt = try values.decode(Date.self, forKey: .sendAt)
+		self.schedule = try values.decode(PushNotificationSchedule.self, forKey: .schedule)
 	}
 
 	public func encode(to encoder: any Encoder) throws {
@@ -76,7 +93,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		try container.encode(apnsID, forKey: .apnsID)
 		try container.encode(topic, forKey: .topic)
 		try container.encode(collapseID, forKey: .collapseID)
-		try container.encode(sendAt, forKey: .sendAt)
+		try container.encode(schedule, forKey: .schedule)
 	}
 
 	public init(
@@ -88,7 +105,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		apnsID: UUID?,
 		topic: String,
 		collapseID: String?,
-		sendAt: Date? = nil
+		schedule: PushNotificationSchedule
 	) {
 		self.deviceToken = deviceToken
 		self.pushType = pushType
@@ -98,7 +115,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		self.topic = topic
 		self.collapseID = collapseID
 		self.message = message
-		self.sendAt = sendAt
+		self.schedule = schedule
 	}
 
 	public func toAPNS() -> APNSMessage {

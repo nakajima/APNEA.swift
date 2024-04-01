@@ -23,13 +23,7 @@ struct SchedulerRoute: Route, Sendable {
 				return "NOPE"
 			}
 
-			try await context.scheduler.schedule(
-				occurrences: 1,
-				interval: 0,
-				nextPush: pushNotificationRequest.sendAt ?? .distantPast,
-				// I couldn't figure out how to turn a byte buffer into a Data. I know.
-				payload: JSONEncoder().encode(pushNotificationRequest)
-			)
+			try await context.scheduler.schedule(pushNotificationRequest)
 
 		} catch {
 			print("ERROR SCHEDULING: \(error)")

@@ -28,6 +28,8 @@ struct ContentView: View {
 	@State private var isServerAvailable = false
 	@State private var hasPermission = false
 	@State private var expectingPush: ExpectedPush?
+	@State private var repeats: Double = 1
+	@State private var interval: Double = 5.0
 
 	var body: some View {
 		List {
@@ -85,18 +87,40 @@ struct ContentView: View {
 						}
 					}
 				}
-				Section("Send a push") {
-					Button("In 5 Seconds") {
-						schedulePush(in: 5)
+				Section {
+					VStack(alignment: .leading) {
+						Text("Interval")
+							.font(.subheadline)
+						Slider(value: $interval.animation(), in: 0...20, step: 5) {
+							Text("Count")
+						} minimumValueLabel: {
+							Text("\(Int(interval))")
+						} maximumValueLabel: {
+							Text("20")
+						}
+						.foregroundStyle(.secondary)
+						.font(.caption)
 					}
-					Button("In 10 Seconds") {
-						schedulePush(in: 10)
-					}
-					Button("In 20 Seconds") {
-						schedulePush(in: 20)
+					.disabled(expectingPush != nil)
+
+					VStack(alignment: .leading) {
+						Text("Repeats")
+							.font(.subheadline)
+						Slider(value: $repeats.animation(), in: 1...5, step: 1) {
+							Text("Count")
+						} minimumValueLabel: {
+							Text("\(Int(repeats))")
+						} maximumValueLabel: {
+							Text("5")
+						}
+						.foregroundStyle(.secondary)
+						.font(.caption)
 					}
 				}
-				.disabled(expectingPush != nil)
+
+				Button("Send a push \(repeats == 1 ? "in" : "every") \(Int(interval)) seconds") {
+					schedulePush()
+				}
 
 				Section("Received Pushes") {
 					if receivedNotifications.isEmpty {
@@ -120,6 +144,7 @@ struct ContentView: View {
 				Text("Push Notifications Not Enabled")
 			}
 		}
+		.listSectionSpacing(.compact)
 		.onChange(of: receivedNotifications.count) {
 			withAnimation {
 				expectingPush = nil
@@ -143,13 +168,13 @@ struct ContentView: View {
 		isServerAvailable = await client.verify()
 	}
 
-	func schedulePush(in interval: TimeInterval) {
+	func schedulePush() {
 		let date = Date().addingTimeInterval(interval)
 
 		guard let pushToken else { return }
 
-		do {
-			Task {
+		Task {
+			do {
 				try await client.schedule(.init(
 					message: .alert(date.formatted()),
 					deviceToken: pushToken.map { String(format: "%02x", $0) }.joined(),
@@ -159,15 +184,21 @@ struct ContentView: View {
 					apnsID: nil,
 					topic: Bundle.main.bundleIdentifier!,
 					collapseID: nil,
-					sendAt: date
+					schedule: repeats == 0 ?
+						.once(on: date) :
+							.init(
+								occurrences: Int(repeats),
+								interval: interval,
+								sendAt: date
+							)
 				))
-			}
 
-			withAnimation {
-				expectingPush = ExpectedPush(id: UUID(), date: date)
+				withAnimation {
+					expectingPush = ExpectedPush(id: UUID(), date: date)
+				}
+			} catch {
+				print("Error scheduling push: \(error)")
 			}
-		} catch {
-			print("Error scheduling push: \(error)")
 		}
 	}
 }
