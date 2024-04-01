@@ -6,6 +6,7 @@
 //
 
 import APNEAClient
+import APNEACore
 import SwiftUI
 import UserNotifications
 import UserNotificationsUI
@@ -20,6 +21,86 @@ struct ReceivedPush: Identifiable {
 	var receivedAt: Date
 }
 
+struct ScheduledPushStatusView: View {
+	enum LoadStatus: Equatable {
+		case loading, done(ScheduledPushStatus), error(String)
+	}
+
+	var client: APNEAClient
+	var uuid: UUID
+
+	@State private var status: LoadStatus = .loading
+
+	var body: some View {
+		if case let .done(status) = status {
+			VStack(alignment: .leading) {
+				Text(status.id.uuidString)
+					.foregroundStyle(.secondary)
+					.bold()
+					.font(.caption)
+				if case let .scheduled(status) = status {
+					HStack {
+						Text("Interval")
+						Spacer()
+						Text(status.interval.formatted())
+							.foregroundStyle(.secondary)
+					}
+					HStack {
+						Text("Remaining")
+						Spacer()
+						Text(status.remainingOccurrences.formatted())
+							.foregroundStyle(.secondary)
+					}
+					HStack {
+						Text("Next Push")
+						Spacer()
+						Text(status.nextPush.formatted())
+							.foregroundStyle(.secondary)
+					}
+				} else {
+					Text("Completed")
+				}
+
+			}
+			.font(.subheadline)
+			.padding(.vertical)
+			.listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 16))
+		} else if case let .error(string) = status {
+			VStack(alignment: .leading) {
+				Text("Error")
+				Text(string)
+			}
+		} else {
+			ProgressView("Loading…")
+				.task {
+					while status == .loading {
+						let status = await refresh()
+
+						await MainActor.run {
+							self.status = status
+						}
+
+						try? await Task.sleep(for: .seconds(2))
+					}
+				}
+		}
+	}
+
+	@discardableResult func refresh() async -> LoadStatus {
+		do {
+			if let status = try await client.status(id: uuid) {
+				return .done(status)
+			} else {
+				print("no status")
+			}
+		} catch {
+			return .error(error.localizedDescription)
+		}
+
+		return .loading
+	}
+}
+
 struct ContentView: View {
 	var client: APNEAClient
 	var pushToken: Data?
@@ -30,6 +111,9 @@ struct ContentView: View {
 	@State private var expectingPush: ExpectedPush?
 	@State private var repeats: Double = 1
 	@State private var interval: Double = 5.0
+	@State private var knownIDs: [UUID] = []
+
+	@State private var statusIsExpanded = false
 
 	var body: some View {
 		List {
@@ -42,30 +126,19 @@ struct ContentView: View {
 			.listRowBackground(Color.clear)
 			if hasPermission {
 				Section {
-					HStack {
-						Text("Push Notifications Enabled")
+					if pushToken == nil {
+						Text("No Push Token Received")
 						Spacer()
-						Image(systemName: "hand.thumbsup.fill")
-							.foregroundStyle(.green)
+						Image(systemName: "xmark.circle.fill")
+							.foregroundStyle(.red)
 					}
-					HStack {
-						if pushToken != nil {
-							Text("Push Token Received")
-							Spacer()
-							Image(systemName: "hand.thumbsup.fill")
-								.foregroundStyle(.green)
-						} else {
-							Text("No Push Token Received")
+					if !isServerAvailable {
+						HStack {
+							Text("Server Not Available")
 							Spacer()
 							Image(systemName: "xmark.circle.fill")
 								.foregroundStyle(.red)
 						}
-					}
-					HStack {
-						Text(isServerAvailable ? "Server Available" : "Server Not Found")
-						Spacer()
-						Image(systemName: isServerAvailable ? "hand.thumbsup.fill" : "xmark.circle.fill")
-							.foregroundStyle(isServerAvailable ? .green : .red)
 					}
 				}
 
@@ -78,11 +151,8 @@ struct ContentView: View {
 								Text(expectingPush.date.formatted(.relative(presentation: .named)))
 									.foregroundStyle(.secondary)
 							}
-						}
-
-						Button("Cancel") {
-							withAnimation {
-								self.expectingPush = nil
+							.task {
+								await refreshExpectedPush()
 							}
 						}
 					}
@@ -91,7 +161,7 @@ struct ContentView: View {
 					VStack(alignment: .leading) {
 						Text("Interval")
 							.font(.subheadline)
-						Slider(value: $interval.animation(), in: 0...20, step: 5) {
+						Slider(value: $interval.animation(), in: 0 ... 20, step: 5) {
 							Text("Count")
 						} minimumValueLabel: {
 							Text("\(Int(interval))")
@@ -106,7 +176,7 @@ struct ContentView: View {
 					VStack(alignment: .leading) {
 						Text("Repeats")
 							.font(.subheadline)
-						Slider(value: $repeats.animation(), in: 1...5, step: 1) {
+						Slider(value: $repeats.animation(), in: 1 ... 5, step: 1) {
 							Text("Count")
 						} minimumValueLabel: {
 							Text("\(Int(repeats))")
@@ -124,7 +194,7 @@ struct ContentView: View {
 
 				Section("Received Pushes") {
 					if receivedNotifications.isEmpty {
-						ContentUnavailableView("Received pushes will appear here.", systemImage: "app.badge")
+						Text("No pushes received yet.")
 							.foregroundStyle(.secondary)
 					}
 
@@ -140,14 +210,31 @@ struct ContentView: View {
 						}
 					}
 				}
+				if !knownIDs.isEmpty {
+					Section {
+						DisclosureGroup(isExpanded: $statusIsExpanded) {
+							ForEach(knownIDs, id: \.self) { uuid in
+								ScheduledPushStatusView(client: client, uuid: uuid)
+							}
+						} label: {
+							Text("Push Statuses")
+						}
+					}
+					.id(receivedNotifications.count)
+				}
 			} else {
-				Text("Push Notifications Not Enabled")
+				HStack {
+					Text("Push Notifications Not Enabled")
+					Spacer()
+					Image(systemName: "xmark.circle.fill")
+						.foregroundStyle(.green)
+				}
 			}
 		}
 		.listSectionSpacing(.compact)
 		.onChange(of: receivedNotifications.count) {
-			withAnimation {
-				expectingPush = nil
+			Task {
+				await refreshExpectedPush()
 			}
 		}
 		.refreshable {
@@ -164,6 +251,27 @@ struct ContentView: View {
 		.fontDesign(.rounded)
 	}
 
+	func refreshExpectedPush() async {
+		do {
+			let statuses = try await client.statuses(ids: knownIDs).values
+
+			let nextStatus = statuses.filter { $0.nextPushAt != nil }.sorted(by: {
+				$0.nextPushAt! < $1.nextPushAt!
+			}).first
+
+			withAnimation {
+				guard let nextStatus, let date = nextStatus.nextPushAt else {
+					self.expectingPush = nil
+					return
+				}
+				
+				self.expectingPush = .init(id: nextStatus.id, date: date)
+			}
+		} catch {
+			print("Error loading statuses \(error)")
+		}
+	}
+
 	@MainActor func refresh() async {
 		isServerAvailable = await client.verify()
 	}
@@ -173,9 +281,12 @@ struct ContentView: View {
 
 		guard let pushToken else { return }
 
+		let id = UUID()
+
 		Task {
 			do {
 				try await client.schedule(.init(
+					id: id,
 					message: .alert(date.formatted()),
 					deviceToken: pushToken.map { String(format: "%02x", $0) }.joined(),
 					pushType: .alert,
@@ -186,15 +297,18 @@ struct ContentView: View {
 					collapseID: nil,
 					schedule: repeats == 0 ?
 						.once(on: date) :
-							.init(
-								occurrences: Int(repeats),
-								interval: interval,
-								sendAt: date
-							)
+						.init(
+							occurrences: Int(repeats),
+							interval: interval,
+							sendAt: date
+						)
 				))
 
-				withAnimation {
-					expectingPush = ExpectedPush(id: UUID(), date: date)
+				await MainActor.run {
+					withAnimation {
+						expectingPush = ExpectedPush(id: UUID(), date: date)
+						knownIDs.append(id)
+					}
 				}
 			} catch {
 				print("Error scheduling push: \(error)")

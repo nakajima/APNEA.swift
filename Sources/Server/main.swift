@@ -80,6 +80,10 @@ final class App {
 			try await SchedulerRoute().handle(request: request, context: context)
 		}
 
+		router.get("status/:id") { request, context -> String in
+			try await StatusRoute().handle(request: request, context: context)
+		}
+
 		let application = Application(
 			router: router,
 			configuration: .init(address: .hostname("127.0.0.1", port: 4567))

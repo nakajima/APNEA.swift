@@ -9,6 +9,5 @@ import Foundation
 import Hummingbird
 
 protocol Route: Sendable {
-	associatedtype RouteResponseGenerator: ResponseGenerator
-	@Sendable func handle(request: Request, context: APNEAContext) async throws -> RouteResponseGenerator
+	@Sendable func handle(request: Request, context: APNEAContext) async throws -> String
 }

@@ -19,6 +19,34 @@ import Observation
 		self.url = url
 	}
 
+	public func status(id: UUID) async throws -> ScheduledPushStatus? {
+		let url = url.appending(path: "status/\(id.uuidString)")
+		let (data, _) = try await URLSession.shared.data(from: url)
+		print("STATUS \(String(data: data, encoding: .utf8)!)")
+
+		return try JSONDecoder().decode(ScheduledPushStatus.self, from: data)
+	}
+
+	public func statuses(ids: [UUID]) async throws -> [UUID: ScheduledPushStatus] {
+		return try await withThrowingTaskGroup(of: ScheduledPushStatus?.self) { group in
+			for id in ids {
+				group.addTask {
+					try await self.status(id: id)
+				}
+			}
+
+			var result: [UUID: ScheduledPushStatus] = [:]
+
+			for try await status in group {
+				if let status {
+					result[status.id] = status
+				}
+			}
+
+			return result
+		}
+	}
+
 	public func schedule(_ pushNotificationRequest: PushNotificationRequest) async throws {
 		let data = try encoder.encode(pushNotificationRequest)
 

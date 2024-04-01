@@ -34,6 +34,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		public init() {}
 	}
 
+	public var id: UUID
 	public var deviceToken: String
 	public var pushType: APNSPushType
 	public var expiration: APNSNotificationExpiration?
@@ -45,11 +46,12 @@ public struct PushNotificationRequest: Codable, Sendable {
 	public var schedule: PushNotificationSchedule
 
 	enum CodingKeys: String, CodingKey {
-		case deviceToken, pushType, expiration, priority, apnsID, topic, collapseID, message, schedule
+		case id, deviceToken, pushType, expiration, priority, apnsID, topic, collapseID, message, schedule
 	}
 
 	public init(from decoder: any Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
+		self.id = try values.decode(UUID.self, forKey: .id)
 		self.deviceToken = try values.decode(String.self, forKey: .deviceToken)
 
 		let pushTypeString = try values.decode(String.self, forKey: .pushType)
@@ -85,6 +87,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 	public func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 
+		try container.encode(id, forKey: .id)
 		try container.encode(message, forKey: .message)
 		try container.encode(deviceToken, forKey: .deviceToken)
 		try container.encode(pushType.configuration.rawValue, forKey: .pushType)
@@ -97,6 +100,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 	}
 
 	public init(
+		id: UUID,
 		message: Message,
 		deviceToken: String,
 		pushType: APNSPushType,
@@ -107,6 +111,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		collapseID: String?,
 		schedule: PushNotificationSchedule
 	) {
+		self.id = id
 		self.deviceToken = deviceToken
 		self.pushType = pushType
 		self.expiration = expiration

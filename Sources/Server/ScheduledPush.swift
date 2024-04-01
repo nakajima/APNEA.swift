@@ -13,7 +13,7 @@ import Logging
 import MessagePack
 
 struct ScheduledPush: Codable {
-	var id = UUID()
+	var id: UUID
 	var occurrences: Int = 1
 	var interval: TimeInterval
 	var nextPush: Date
@@ -21,10 +21,27 @@ struct ScheduledPush: Codable {
 	var error: String?
 }
 
+struct PushSchedulerSnapshot: Codable {
+	var schedules: [UUID: ScheduledPush]
+	var errored: [ScheduledPush]
+	var completedIDs: Set<UUID>
+
+	var description: String {
+		let encoder = JSONEncoder()
+		encoder.outputFormatting = .prettyPrinted
+		if let data = try? encoder.encode(self) {
+			return "Snapshot loaded:\n\(String(data: data, encoding: .utf8)!)"
+		} else {
+			return "Snapshot not loaded"
+		}
+	}
+}
+
 // Ummmm this should probably be better
 actor PushScheduler {
 	var schedules: [UUID: ScheduledPush] = [:]
 	var errored: [ScheduledPush] = []
+	var completedIDs: Set<UUID> = []
 	var apns: APNSClient<JSONDecoder, JSONEncoder>
 	var logger = Logger(label: "push-scheduler")
 	var saveURL = URL(string: "file://" + FileManager.default.currentDirectoryPath + "/schedule.db")
@@ -39,11 +56,39 @@ actor PushScheduler {
 		do {
 			if let saveURL, FileManager.default.fileExists(atPath: saveURL.path) {
 				let data = try Data(contentsOf: saveURL)
-				let schedules = try MessagePackDecoder().decode([UUID: ScheduledPush].self, from: data)
-				self.schedules = schedules
+				let snapshot = try MessagePackDecoder().decode(PushSchedulerSnapshot.self, from: data)
+				self.schedules = snapshot.schedules
+				self.errored = snapshot.errored
+				self.completedIDs = snapshot.completedIDs
+				logger.info("Snapshot loaded:\n\(snapshot.description)")
 			}
 		} catch {
 			logger.error("Error loading push scheduler from disk: \(error)")
+		}
+	}
+
+	var snapshot: PushSchedulerSnapshot {
+		PushSchedulerSnapshot(
+			schedules: schedules,
+			errored: errored,
+			completedIDs: completedIDs
+		)
+	}
+
+	func status(id: UUID) -> ScheduledPushStatus? {
+		if let schedule = schedules[id] {
+			return .scheduled(
+				.init(
+					id: id,
+					remainingOccurrences: schedule.occurrences,
+					interval: schedule.interval,
+					nextPush: schedule.nextPush
+				)
+			)
+		} else if completedIDs.contains(id) {
+			return .finished(id)
+		} else {
+			return nil
 		}
 	}
 
@@ -56,7 +101,7 @@ actor PushScheduler {
 
 		do {
 			if let saveURL {
-				let data = try MessagePackEncoder().encode(schedules)
+				let data = try MessagePackEncoder().encode(snapshot)
 				try data.write(to: saveURL)
 			}
 		} catch {
@@ -65,11 +110,12 @@ actor PushScheduler {
 	}
 
 	func schedule(_ request: PushNotificationRequest) async throws {
-		let schedule = ScheduledPush(
+		let schedule = try ScheduledPush(
+			id: request.id,
 			occurrences: request.schedule.occurrences,
 			interval: request.schedule.interval,
 			nextPush: request.schedule.sendAt,
-			payload: try JSONEncoder().encode(request)
+			payload: JSONEncoder().encode(request)
 		)
 
 		await handle(id: schedule.id, schedule: schedule)
@@ -121,6 +167,7 @@ actor PushScheduler {
 
 		if schedule.occurrences == 0 {
 			schedules[id] = nil
+			completedIDs.insert(id)
 		} else {
 			schedules[id] = schedule
 		}

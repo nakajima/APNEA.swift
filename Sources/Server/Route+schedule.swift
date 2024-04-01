@@ -9,12 +9,9 @@ import APNEACore
 import APNSCore
 import Foundation
 import Hummingbird
-import HummingbirdJobs
 
 struct SchedulerRoute: Route, Sendable {
-	typealias RouteResponseGenerator = String
-
-	func handle(request: Request, context: APNEAContext) async throws -> RouteResponseGenerator {
+	func handle(request: HummingbirdCore.Request, context: APNEAContext) async throws -> String {
 		do {
 			let pushNotificationRequestData = try await request.body.collect(upTo: context.maxUploadSize)
 			let pushNotificationRequest = try JSONDecoder().decode(PushNotificationRequest.self, from: pushNotificationRequestData)
