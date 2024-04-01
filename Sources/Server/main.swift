@@ -60,7 +60,6 @@ final class App {
 
 				// Umm use an actual scheduler here
 				if let sendAt = pushNotificationRequest.sendAt, sendAt > Date() {
-					print("Waiting \(sendAt.timeIntervalSince(Date()))")
 					try! await Task.sleep(for: .seconds(sendAt.timeIntervalSince(Date())))
 				}
 
