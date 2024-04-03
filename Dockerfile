@@ -10,7 +10,7 @@ WORKDIR /app
 ADD . /app
 
 # Build the application
-# RUN swift package update
+RUN swift package update
 RUN swift build -c release --product APNEAServer
 
 RUN mkdir /app/bin
