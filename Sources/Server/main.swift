@@ -10,7 +10,7 @@ import APNS
 import APNSCore
 import Crypto
 import Foundation
-@preconcurrency import Hummingbird
+import Hummingbird
 import NIOCore
 
 struct ContextProvider: RouterMiddleware {
