@@ -1,5 +1,5 @@
 {
-  "originHash" : "d1fdd5d98540d0bff457123a0aeee8a273035b13b6e6d908ed6c0abf02d46052",
+  "originHash" : "5d572047c574be0e35b0839f7e21178e9144eb53e6504935aaa8ca51df524867",
   "pins" : [
     {
       "identity" : "apnswift",
@@ -34,7 +34,7 @@
       "location" : "https://github.com/nakajima/Jobsy.swift",
       "state" : {
         "branch" : "main",
-        "revision" : "8192d357bf3e917caff7b7aa38118a13a2e27bf6"
+        "revision" : "22dc45cc67479688870f1ca17d984ad3d285d48e"
       }
     },
     {

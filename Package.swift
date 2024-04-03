@@ -8,7 +8,7 @@ let package = Package(
 	platforms: [.macOS(.v14), .iOS(.v17)],
 	products: [
 		.library(name: "APNEAClient", targets: ["APNEAClient"]),
-		.executable(name: "Server", targets: ["Server"]),
+		.executable(name: "APNEAServer", targets: ["Server"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird", branch: "main"),

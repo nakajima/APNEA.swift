@@ -12,6 +12,7 @@ import Foundation
 import Jobsy
 import Logging
 import MessagePack
+import RediStack
 
 struct ScheduledPush: Codable {
 	var id: UUID
@@ -64,8 +65,8 @@ actor PushScheduler {
 		}
 	}
 
-	func run() async throws {
-		try await Runner(scheduler: scheduler, pollInterval: 1).run()
+	func run() async {
+		await Runner(pollInterval: 1).run(connection: .url(App.env("REDIS_URL")), for: [PushNotificationJob.self])
 	}
 
 	func schedule(_ request: PushNotificationRequest) async throws {
