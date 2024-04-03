@@ -27,13 +27,15 @@ struct ScheduledPush: Codable {
 actor PushScheduler {
 	var logger = Logger(label: "push-scheduler")
 
-	let scheduler = JobScheduler(redis: .dev(), kinds: [PushNotificationJob.self])
+	let scheduler = JobScheduler(redis: .url(App.env("REDIS_URL")), kinds: [PushNotificationJob.self])
 
 	enum Error: Swift.Error {
 		case unsupportedMessage(String)
 	}
 
-	init() {}
+	init() {
+		print("REDIS URL IS \(App.env("REDIS_URL"))")
+	}
 
 	func status(id: UUID) async throws -> ScheduledPushStatus? {
 		if case let .scheduled(schedule) = try await scheduler.status(jobID: id.uuidString) {

@@ -23,6 +23,30 @@
       "name": "Release Server",
       "program": "${workspaceFolder:APNEA}/.build/release/Server",
       "preLaunchTask": "swift: Build Release Server"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:APNEA}",
+      "name": "Debug APNEAServer",
+      "program": "${workspaceFolder:APNEA}/.build/debug/APNEAServer",
+      "preLaunchTask": "swift: Build Debug APNEAServer"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:APNEA}",
+      "name": "Release APNEAServer",
+      "program": "${workspaceFolder:APNEA}/.build/release/APNEAServer",
+      "preLaunchTask": "swift: Build Release APNEAServer"
     }
   ]
 }

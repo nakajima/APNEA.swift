@@ -43,11 +43,7 @@ final class App {
 	init() {
 		self.scheduler = PushScheduler()
 		self.schedulerTask = Task.detached {
-			do {
-				try await self.scheduler.run()
-			} catch {
-				fatalError("did not run scheduler: \(error)")
-			}
+			await self.scheduler.run()
 		}
 	}
 
