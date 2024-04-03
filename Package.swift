@@ -12,9 +12,9 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird", revision: "a72b6132f06142bc3539f1f5102e779d456b677e"),
-		.package(url: "https://github.com/swift-server-community/APNSwift", revision: "e2b5b76ee03a9180ff615211bcdcbb42b656ccec"),
+		.package(url: "https://github.com/nakajima/APNSwift", branch: "start-live-activities"),
 		.package(url: "https://github.com/Flight-School/MessagePack", revision: "bbc5ab6362db234f2051e73e67296ebf5c3d2042"),
-		.package(url: "https://github.com/nakajima/Jobsy.swift", from: "0.0.3"),
+		.package(url: "https://github.com/nakajima/Jobsy.swift", branch: "main"),
 	],
 	targets: [
 		.target(

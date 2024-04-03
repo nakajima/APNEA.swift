@@ -8,8 +8,45 @@
 import APNSCore
 import Foundation
 
+public struct APNEAActivityAttributes: Codable, Sendable, Hashable {
+	public enum Value: Codable, Sendable, Hashable, CustomStringConvertible {
+		case string(String), int(Int), double(Double)
+
+		public var description: String {
+			switch self {
+			case let .string(string):
+				string
+			case let .int(int):
+				"\(int)"
+			case let .double(double):
+				"\(double)"
+			}
+		}
+	}
+
+	public typealias ContentState = [String: Value]
+
+	public init() throws {}
+}
+
+#if canImport(ActivityKit)
+	import ActivityKit
+
+	extension APNEAActivityAttributes: ActivityAttributes {}
+#endif
+
+public struct LiveActivityMessage: Codable, Sendable {
+	var pushToken: String
+	var rawEvent: String // APNSLiveActivityNotificationEvent
+
+	public init(pushToken: String, rawEvent: String) {
+		self.pushToken = pushToken
+		self.rawEvent = rawEvent
+	}
+}
+
 public enum Message: Codable, Sendable {
-	case background, alert(String)
+	case background, alert(String), liveactivity(String, APNEAActivityAttributes.ContentState)
 }
 
 public struct PushNotificationSchedule: Sendable, Codable {
@@ -117,7 +154,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		self.expiration = expiration
 		self.priority = priority
 		self.apnsID = apnsID
-		self.topic = topic
+		self.topic = pushType == .liveactivity ? topic + ".push-type.liveactivity" : topic
 		self.collapseID = collapseID
 		self.message = message
 		self.schedule = schedule
@@ -125,6 +162,28 @@ public struct PushNotificationRequest: Codable, Sendable {
 
 	public func toAPNS() -> APNSMessage {
 		switch message {
+		case let .liveactivity(event, attributes):
+			let event: any APNSLiveActivityNotificationEvent = switch event {
+			case "update": .update
+			case "end": .end
+			case "start": APNSLiveActivityNotificationEventStart(
+					attributes: .init(
+						type: "APNEAActivityAttributes",
+						state: attributes
+					),
+					alert: .init(title: .raw("Update"), body: .raw("Body"))
+				)
+			default: .update
+			}
+
+			return APNSLiveActivityNotification(
+				expiration: .none,
+				priority: .immediately,
+				topic: topic,
+				contentState: attributes,
+				event: event,
+				timestamp: Int(Date().timeIntervalSince1970)
+			)
 		case .background:
 			return APNSBackgroundNotification(
 				expiration: expiration ?? .immediately,

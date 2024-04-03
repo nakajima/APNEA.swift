@@ -38,7 +38,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 			receivedNotifications!.update()
 		}
 
-		Date().advanced(by: <#T##TimeInterval#>)
 		// Show a banner
 		completionHandler(.banner)
 	}
@@ -48,7 +47,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 struct APNEAExampleApp: App {
 	@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-	let client = APNEAClient(url: URL(string: "https://apnea.fishmt.net")!)
+	let client = APNEAClient(url: URL(string: "http://localhost:4567")!)
 
 	@State private var pushToken: Data?
 	@State var receivedNotifications: [UNNotification] = []

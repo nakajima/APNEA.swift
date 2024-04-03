@@ -16,7 +16,7 @@ struct SchedulerRoute: Route, Sendable {
 			let pushNotificationRequestData = try await request.body.collect(upTo: context.maxUploadSize)
 			let pushNotificationRequest = try JSONDecoder().decode(PushNotificationRequest.self, from: pushNotificationRequestData)
 
-			if pushNotificationRequest.topic != App.env("TOPIC") {
+			if !pushNotificationRequest.topic.starts(with: App.env("TOPIC")) {
 				return "NOPE"
 			}
 

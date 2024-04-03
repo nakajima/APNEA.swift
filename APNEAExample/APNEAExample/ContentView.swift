@@ -5,6 +5,7 @@
 //  Created by Pat Nakajima on 3/31/24.
 //
 
+import ActivityKit
 import APNEAClient
 import APNEACore
 import SwiftUI
@@ -105,12 +106,34 @@ struct ContentView: View {
 	var pushToken: Data?
 	var receivedNotifications: [UNNotification] = []
 
+	enum LiveActivityStatus {
+		case unknown, requested, active(Activity<APNEAActivityAttributes>?, String), error(String)
+
+		var disableButton: Bool {
+			switch self {
+			case .active:
+				false
+			default:
+				true
+			}
+		}
+
+		var errorMessage: String? {
+			if case let .error(string) = self {
+				return string
+			} else {
+				return nil
+			}
+		}
+	}
+
 	@State private var isServerAvailable = false
 	@State private var hasPermission = false
 	@State private var expectingPush: ExpectedPush?
 	@State private var repeats: Double = 1
 	@State private var interval: Double = 5.0
 	@State private var knownIDs: [UUID] = []
+	@State private var liveActivityStatus: LiveActivityStatus = .unknown
 
 	@State private var statusIsExpanded = true
 
@@ -126,10 +149,12 @@ struct ContentView: View {
 			if hasPermission {
 				Section {
 					if pushToken == nil {
-						Text("No Push Token Received")
-						Spacer()
-						Image(systemName: "xmark.circle.fill")
-							.foregroundStyle(.red)
+						HStack {
+							Text("No Push Token Received")
+							Spacer()
+							Image(systemName: "xmark.circle.fill")
+								.foregroundStyle(.red)
+						}
 					}
 					if !isServerAvailable {
 						HStack {
@@ -176,13 +201,36 @@ struct ContentView: View {
 					schedulePush()
 				}
 
+				Section {
+					Button("Send a live activity push in \(Int(interval)) seconds") {
+						scheduleLiveActivityPush()
+					}
+					.disabled(liveActivityStatus.disableButton)
+					.task {
+						if case .active = liveActivityStatus {
+							return
+						}
+
+						do {
+							try await requestLiveActivityToken()
+						} catch {
+							self.liveActivityStatus = .error(error.localizedDescription)
+						}
+					}
+
+					if let errorMessage = liveActivityStatus.errorMessage {
+						Text(errorMessage)
+							.font(.caption)
+					}
+				}
+
 				Section("Received Pushes") {
 					if receivedNotifications.isEmpty {
 						Text("No pushes received yet.")
 							.foregroundStyle(.secondary)
 					}
 
-					ForEach(Array(receivedNotifications.enumerated()), id: \.0) { (_, receivedNotification) in
+					ForEach(Array(receivedNotifications.enumerated()), id: \.0) { _, receivedNotification in
 						DisclosureGroup {
 							Text(receivedNotification.debugDescription)
 								.font(.caption)
@@ -315,6 +363,64 @@ struct ContentView: View {
 							interval: interval,
 							sendAt: date
 						)
+				))
+
+				await MainActor.run {
+					withAnimation {
+						expectingPush = ExpectedPush(id: UUID(), date: date)
+						knownIDs.append(id)
+					}
+				}
+			} catch {
+				print("Error scheduling push: \(error)")
+			}
+		}
+	}
+
+	func requestLiveActivityToken() async throws {
+		let activity = try Activity.request(
+			attributes: APNEAActivityAttributes(),
+			content: ActivityContent(
+				state: ["emoji": .string("🤑")],
+				staleDate: nil,
+				relevanceScore: 100
+			),
+			pushType: .token
+		)
+
+		Task {
+			try? await Task.sleep(for: .seconds(1))
+			await activity.end(nil)
+		}
+
+		for await update in Activity<APNEAActivityAttributes>.pushToStartTokenUpdates {
+			liveActivityStatus = .active(nil, update.map { String(format: "%02x", $0) }.joined())
+		}
+	}
+
+	func scheduleLiveActivityPush() {
+		let id = UUID()
+		let date = Date().addingTimeInterval(interval)
+
+		guard case let .active(_, token) = liveActivityStatus else {
+			return
+		}
+
+		print("GOT A PUSH TOKEN \(token)")
+
+		Task {
+			do {
+				try await client.schedule(.init(
+					id: id,
+					message: .liveactivity("start", ["emoji": .string("🙊")]),
+					deviceToken: token,
+					pushType: .liveactivity,
+					expiration: .immediately,
+					priority: .immediately,
+					apnsID: nil,
+					topic: Bundle.main.bundleIdentifier!,
+					collapseID: nil,
+					schedule: .once(on: date)
 				))
 
 				await MainActor.run {

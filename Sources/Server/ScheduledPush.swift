@@ -81,7 +81,7 @@ actor PushScheduler {
 
 		let repeats: JobFrequency = if schedule.occurrences == -1 {
 			.forever(.seconds(schedule.interval))
-		} else if schedule.occurrences == 1 {
+		} else if schedule.occurrences == JobScheduler.onceRemaining {
 			.once
 		} else {
 			.times(schedule.occurrences, .seconds(schedule.interval))

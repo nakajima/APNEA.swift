@@ -22,7 +22,7 @@ struct PushNotificationJob: Job {
 		let request = try JSONDecoder().decode(PushNotificationRequest.self, from: parameters.payload)
 
 		func send(message: some APNSMessage) async throws {
-			_ = try await APNS.send(APNSRequest(
+			let request = APNSRequest(
 				message: message,
 				deviceToken: request.deviceToken,
 				pushType: request.pushType,
@@ -31,7 +31,11 @@ struct PushNotificationJob: Job {
 				apnsID: UUID(),
 				topic: request.topic,
 				collapseID: request.id.uuidString
-			))
+			)
+
+			print("SENDING PUSH NOTIFICATION \(request.topic) \(String(data: try! JSONEncoder().encode(request.message), encoding: .utf8)!)")
+
+			_ = try await APNS.send(request)
 		}
 
 		switch request.toAPNS() {
@@ -39,7 +43,10 @@ struct PushNotificationJob: Job {
 			try await send(message: n)
 		case let n as APNSBackgroundNotification<PushNotificationRequest.Payload>:
 			try await send(message: n)
+		case let n as APNSLiveActivityNotification<APNEAActivityAttributes.ContentState>:
+			try await send(message: n)
 		default:
+			print("UNSUPPORTED MESSAGE \(request)")
 			throw PushScheduler.Error.unsupportedMessage("Unsupported message type: \(request.message)")
 		}
 	}
