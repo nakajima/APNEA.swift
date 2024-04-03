@@ -182,7 +182,7 @@ struct ContentView: View {
 							.foregroundStyle(.secondary)
 					}
 
-					ForEach(receivedNotifications, id: \.request.identifier) { receivedNotification in
+					ForEach(Array(receivedNotifications.enumerated()), id: \.0) { (_, receivedNotification) in
 						DisclosureGroup {
 							Text(receivedNotification.debugDescription)
 								.font(.caption)

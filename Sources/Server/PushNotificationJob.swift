@@ -28,7 +28,7 @@ struct PushNotificationJob: Job {
 				pushType: request.pushType,
 				expiration: request.expiration,
 				priority: request.priority,
-				apnsID: request.apnsID,
+				apnsID: UUID(),
 				topic: request.topic,
 				collapseID: request.id.uuidString
 			))

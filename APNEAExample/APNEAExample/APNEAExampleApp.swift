@@ -38,6 +38,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 			receivedNotifications!.update()
 		}
 
+		Date().advanced(by: <#T##TimeInterval#>)
 		// Show a banner
 		completionHandler(.banner)
 	}

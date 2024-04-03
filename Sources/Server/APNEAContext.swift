@@ -11,7 +11,7 @@ import Foundation
 import Logging
 import NIOCore
 
-final class APNEAContext: RequestContext {
+final class APNEAContext: RequestContext, @unchecked Sendable {
 	/// core context
 	public var coreContext: CoreRequestContext
 	public var scheduler: PushScheduler!

@@ -36,8 +36,8 @@ final class App {
 		}
 	}()
 
-	static func env(_ key: String) -> String {
-		ProcessInfo.processInfo.environment[key] ?? ""
+	static func env<T>(_ key: String, default defaultValue: String = "", cast: (String) -> T = { val in val }) -> T {
+		cast(ProcessInfo.processInfo.environment[key] ?? defaultValue)
 	}
 
 	init() {
@@ -67,7 +67,12 @@ final class App {
 
 		let application = Application(
 			router: router,
-			configuration: .init(address: .hostname("localhost", port: 4567))
+			configuration: .init(
+				address: .hostname(
+					"localhost",
+					port: App.env("PORT", default: "4567") { port in Int(port)! }
+				)
+			)
 		)
 
 		try await application.runService()
