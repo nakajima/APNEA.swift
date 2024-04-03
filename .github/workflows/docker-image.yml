@@ -1,9 +1,10 @@
 name: docker
 
 on:
+  
   push:
-    branches:
-      - 'main'
+    tags:
+      - v*
 
 jobs:
   docker:
@@ -26,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: rockajima/apnea:latest
+          tags: rockajima/apnea:latest,rockajima/apnea:${{ github.ref_name }}
