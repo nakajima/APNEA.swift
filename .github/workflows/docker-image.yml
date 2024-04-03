@@ -27,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: rockajima/apnea:latest,rockajima/apnea:${{ github.ref_name }}
+          tags: rockajima/apnea:${{ github.ref_name }},rockajima/apnea:latest
