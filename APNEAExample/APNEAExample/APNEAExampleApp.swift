@@ -47,7 +47,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 struct APNEAExampleApp: App {
 	@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-	let client = APNEAClient(url: URL(string: "http://localhost:4567")!)
+	let client = APNEAClient(url: URL(string: "https://apnea.fishmt.net")!)
 
 	@State private var pushToken: Data?
 	@State var receivedNotifications: [UNNotification] = []

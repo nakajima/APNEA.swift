@@ -1,12 +1,11 @@
 {
-  "originHash" : "5d572047c574be0e35b0839f7e21178e9144eb53e6504935aaa8ca51df524867",
+  "originHash" : "c3fc3c5098fb58bf7bdd67de90dd67435b481821fd38cdb2b14642ca90d6f61d",
   "pins" : [
     {
       "identity" : "apnswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server-community/APNSwift",
       "state" : {
-        "branch" : "main",
         "revision" : "e2b5b76ee03a9180ff615211bcdcbb42b656ccec"
       }
     },
@@ -24,7 +23,6 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hummingbird-project/hummingbird",
       "state" : {
-        "branch" : "main",
         "revision" : "a72b6132f06142bc3539f1f5102e779d456b677e"
       }
     },
@@ -33,8 +31,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nakajima/Jobsy.swift",
       "state" : {
-        "branch" : "main",
-        "revision" : "9909d8d4667690da5ef2ac77d8da8cc138175a05"
+        "revision" : "48743b4e63ce9beaaec08062d736834aa5a21d5f",
+        "version" : "0.0.3"
       }
     },
     {
@@ -42,7 +40,6 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Flight-School/MessagePack",
       "state" : {
-        "branch" : "master",
         "revision" : "bbc5ab6362db234f2051e73e67296ebf5c3d2042"
       }
     },
