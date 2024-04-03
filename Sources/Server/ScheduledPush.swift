@@ -45,7 +45,7 @@ actor PushScheduler {
 			switch schedule.frequency {
 			case .once:
 				remaining = 0
-				interval = -1
+				interval = -2
 			case let .times(r, i):
 				remaining = r
 				interval = TimeInterval(i.components.seconds)
