@@ -60,7 +60,6 @@ struct ScheduledPushStatusView: View {
 				} else {
 					Text("Completed")
 				}
-
 			}
 			.font(.subheadline)
 			.padding(.vertical)
@@ -113,7 +112,7 @@ struct ContentView: View {
 	@State private var interval: Double = 5.0
 	@State private var knownIDs: [UUID] = []
 
-	@State private var statusIsExpanded = false
+	@State private var statusIsExpanded = true
 
 	var body: some View {
 		List {
@@ -142,21 +141,6 @@ struct ContentView: View {
 					}
 				}
 
-				if let expectingPush {
-					Section {
-						TimelineView(.periodic(from: Date(), by: 1)) { _ in
-							HStack {
-								Text("Push Expected")
-								Spacer()
-								Text(expectingPush.date.formatted(.relative(presentation: .named)))
-									.foregroundStyle(.secondary)
-							}
-							.task {
-								await refreshExpectedPush()
-							}
-						}
-					}
-				}
 				Section {
 					VStack(alignment: .leading) {
 						Text("Interval")
@@ -210,6 +194,23 @@ struct ContentView: View {
 						}
 					}
 				}
+
+				if let expectingPush {
+					Section {
+						TimelineView(.periodic(from: Date(), by: 1)) { _ in
+							HStack {
+								Text("Push Expected")
+								Spacer()
+								Text(expectingPush.date.formatted(.relative(presentation: .named)))
+									.foregroundStyle(.secondary)
+							}
+							.task {
+								await refreshExpectedPush()
+							}
+						}
+					}
+				}
+
 				if !knownIDs.isEmpty {
 					Section {
 						DisclosureGroup(isExpanded: $statusIsExpanded) {
@@ -217,7 +218,7 @@ struct ContentView: View {
 								ScheduledPushStatusView(client: client, uuid: uuid)
 							}
 						} label: {
-							Text("Push Statuses")
+							Text("Pending Pushes")
 						}
 					}
 					.id(receivedNotifications.count)
@@ -253,19 +254,31 @@ struct ContentView: View {
 
 	func refreshExpectedPush() async {
 		do {
-			let statuses = try await client.statuses(ids: knownIDs).values
+			let statuses = try await client.statuses(ids: knownIDs)
 
-			let nextStatus = statuses.filter { $0.nextPushAt != nil }.sorted(by: {
+			for knownID in knownIDs {
+				if statuses[knownID] == nil {
+					await MainActor.run {
+						withAnimation {
+							knownIDs.removeAll(where: { $0 == knownID })
+						}
+					}
+				}
+			}
+
+			let nextStatus = statuses.values.filter { $0.nextPushAt != nil }.sorted(by: {
 				$0.nextPushAt! < $1.nextPushAt!
 			}).first
 
-			withAnimation {
-				guard let nextStatus, let date = nextStatus.nextPushAt else {
-					self.expectingPush = nil
-					return
+			await MainActor.run {
+				withAnimation {
+					guard let nextStatus, let date = nextStatus.nextPushAt else {
+						self.expectingPush = nil
+						return
+					}
+
+					self.expectingPush = .init(id: nextStatus.id, date: date)
 				}
-				
-				self.expectingPush = .init(id: nextStatus.id, date: date)
 			}
 		} catch {
 			print("Error loading statuses \(error)")

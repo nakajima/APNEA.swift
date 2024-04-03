@@ -31,7 +31,7 @@ import Observation
 		return try await withThrowingTaskGroup(of: ScheduledPushStatus?.self) { group in
 			for id in ids {
 				group.addTask {
-					try await self.status(id: id)
+					try? await self.status(id: id)
 				}
 			}
 

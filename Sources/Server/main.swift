@@ -23,7 +23,6 @@ struct ContextProvider: RouterMiddleware {
 }
 
 final class App {
-	let apns: APNSClient<JSONDecoder, JSONEncoder>
 	let scheduler: PushScheduler
 	var schedulerTask: Task<Void, Never>?
 
@@ -42,26 +41,12 @@ final class App {
 	}
 
 	init() {
-		let apns = APNSClient(
-			configuration: .init(
-				authenticationMethod: .jwt(
-					privateKey: App.privateKey,
-					keyIdentifier: App.env("KEY_IDENTIFIER"),
-					teamIdentifier: App.env("TEAM_IDENTIFIER")
-				),
-				environment: .sandbox
-			),
-			eventLoopGroupProvider: .createNew,
-			responseDecoder: JSONDecoder(),
-			requestEncoder: JSONEncoder()
-		)
-
-		self.apns = apns
-		self.scheduler = PushScheduler(apns: apns)
+		self.scheduler = PushScheduler()
 		self.schedulerTask = Task.detached {
-			while true {
-				await self.scheduler.run()
-				try? await Task.sleep(for: .seconds(1))
+			do {
+				try await self.scheduler.run()
+			} catch {
+				fatalError("did not run scheduler: \(error)")
 			}
 		}
 	}

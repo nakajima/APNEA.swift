@@ -1,5 +1,5 @@
 {
-  "originHash" : "169e7827afbefdf7a7243eeed033b770818e33a2944705e3ab0d973e969da3a6",
+  "originHash" : "d1fdd5d98540d0bff457123a0aeee8a273035b13b6e6d908ed6c0abf02d46052",
   "pins" : [
     {
       "identity" : "apnswift",
@@ -29,12 +29,30 @@
       }
     },
     {
+      "identity" : "jobsy.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nakajima/Jobsy.swift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8192d357bf3e917caff7b7aa38118a13a2e27bf6"
+      }
+    },
+    {
       "identity" : "messagepack",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Flight-School/MessagePack",
       "state" : {
         "branch" : "master",
         "revision" : "bbc5ab6362db234f2051e73e67296ebf5c3d2042"
+      }
+    },
+    {
+      "identity" : "redistack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/RediStack.git",
+      "state" : {
+        "revision" : "622ce440f90d79b58e45f3a3efdd64c51d1dfd17",
+        "version" : "1.6.2"
       }
     },
     {

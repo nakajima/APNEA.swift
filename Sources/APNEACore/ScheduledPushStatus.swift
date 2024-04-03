@@ -26,18 +26,18 @@ public enum ScheduledPushStatus: Codable, Identifiable, Equatable {
 
 	public var nextPushAt: Date? {
 		switch self {
-		case .scheduled(let scheduled):
+		case let .scheduled(scheduled):
 			scheduled.nextPush
-		case .finished(_):
+		case .finished:
 			nil
 		}
 	}
 
 	public var id: UUID {
 		switch self {
-		case .scheduled(let scheduled):
+		case let .scheduled(scheduled):
 			scheduled.id
-		case .finished(let uUID):
+		case let .finished(uUID):
 			uUID
 		}
 	}
