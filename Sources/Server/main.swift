@@ -71,7 +71,7 @@ final class App {
 
 		let application = Application(
 			router: router,
-			configuration: .init(address: .hostname("127.0.0.1", port: 4567))
+			configuration: .init(address: .hostname("localhost", port: 4567))
 		)
 
 		try await application.runService()
