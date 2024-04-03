@@ -107,12 +107,12 @@ struct ContentView: View {
 	var receivedNotifications: [UNNotification] = []
 
 	enum LiveActivityStatus {
-		case unknown, requested, active(Activity<APNEAActivityAttributes>?, String), error(String)
+		case unknown, requested(Date), active(Activity<APNEAActivityAttributes>?, String), error(String)
 
 		var disableButton: Bool {
 			switch self {
-			case .active:
-				false
+			case .active(let activity, _):
+				activity == nil
 			default:
 				true
 			}
@@ -207,6 +207,11 @@ struct ContentView: View {
 					}
 					.disabled(liveActivityStatus.disableButton)
 					.task {
+						for await activity in Activity<APNEAActivityAttributes>.activityUpdates {
+							self.liveActivityStatus = .active(activity, currentActivityToken)
+						}
+					}
+					.task {
 						if case .active = liveActivityStatus {
 							return
 						}
@@ -215,6 +220,29 @@ struct ContentView: View {
 							try await requestLiveActivityToken()
 						} catch {
 							self.liveActivityStatus = .error(error.localizedDescription)
+						}
+					}
+
+					if let activity = currentActivity, activity.activityState == .active {
+						HStack {
+							Text("Live activity currently \(activity.activityState)")
+							Spacer()
+
+							Button("End") {
+								Task.detached(priority: .userInitiated) {
+									for activity in Activity<APNEAActivityAttributes>.activities {
+										await activity.end(nil, dismissalPolicy: .immediate)
+									}
+								}
+
+								withAnimation {
+									self.liveActivityStatus = .active(nil, currentActivityToken)
+								}
+							}
+						}
+					} else if case let .requested(date) = liveActivityStatus {
+						TimelineView(.periodic(from: Date(), by: 1)) { _ in
+							Text("Expecting live activity in \(date.formatted(.relative(presentation: .named)))")
 						}
 					}
 
@@ -394,7 +422,23 @@ struct ContentView: View {
 		}
 
 		for await update in Activity<APNEAActivityAttributes>.pushToStartTokenUpdates {
-			liveActivityStatus = .active(nil, update.map { String(format: "%02x", $0) }.joined())
+			liveActivityStatus = .active(currentActivity, update.map { String(format: "%02x", $0) }.joined())
+		}
+	}
+
+	var currentActivity: Activity<APNEAActivityAttributes>? {
+		if case let .active(activity, string) = liveActivityStatus {
+			return activity
+		} else {
+			return nil
+		}
+	}
+
+	var currentActivityToken: String {
+		if case let .active(_, token) = self.liveActivityStatus {
+			token
+		} else {
+			"NO TOKEN"
 		}
 	}
 
@@ -425,8 +469,7 @@ struct ContentView: View {
 
 				await MainActor.run {
 					withAnimation {
-						expectingPush = ExpectedPush(id: UUID(), date: date)
-						knownIDs.append(id)
+						liveActivityStatus = .requested(date)
 					}
 				}
 			} catch {

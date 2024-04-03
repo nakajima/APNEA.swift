@@ -33,10 +33,6 @@ actor PushScheduler {
 		case unsupportedMessage(String)
 	}
 
-	init() {
-		print("REDIS URL IS \(App.env("REDIS_URL"))")
-	}
-
 	func status(id: UUID) async throws -> ScheduledPushStatus? {
 		if case let .scheduled(schedule) = try await scheduler.status(jobID: id.uuidString) {
 			let remaining: Int

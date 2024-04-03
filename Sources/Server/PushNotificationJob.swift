@@ -33,8 +33,6 @@ struct PushNotificationJob: Job {
 				collapseID: request.id.uuidString
 			)
 
-			print("SENDING PUSH NOTIFICATION \(request.topic) \(String(data: try! JSONEncoder().encode(request.message), encoding: .utf8)!)")
-
 			_ = try await APNS.send(request)
 		}
 
@@ -46,7 +44,6 @@ struct PushNotificationJob: Job {
 		case let n as APNSLiveActivityNotification<APNEAActivityAttributes.ContentState>:
 			try await send(message: n)
 		default:
-			print("UNSUPPORTED MESSAGE \(request)")
 			throw PushScheduler.Error.unsupportedMessage("Unsupported message type: \(request.message)")
 		}
 	}

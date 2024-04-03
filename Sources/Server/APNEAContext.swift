@@ -5,9 +5,9 @@
 //  Created by Pat Nakajima on 3/31/24.
 //
 
-@preconcurrency import APNS
+import APNS
 import Foundation
-@preconcurrency import Hummingbird
+import Hummingbird
 import Logging
 import NIOCore
 
