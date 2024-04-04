@@ -65,6 +65,10 @@ final class App {
 			try await StatusRoute().handle(request: request, context: context)
 		}
 
+		router.post("status/:id/cancel") { request, context -> String in
+			try await StatusRoute().handle(request: request, context: context)
+		}
+
 		let application = Application(
 			router: router,
 			configuration: .init(

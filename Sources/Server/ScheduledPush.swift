@@ -33,6 +33,10 @@ actor PushScheduler {
 		case unsupportedMessage(String)
 	}
 
+	func cancel(jobID: String) async throws {
+		try await scheduler.cancel(jobID: id)
+	}
+
 	func status(id: UUID) async throws -> ScheduledPushStatus? {
 		if case let .scheduled(schedule) = try await scheduler.status(jobID: id.uuidString) {
 			let remaining: Int
