@@ -48,6 +48,17 @@ import Observation
 		_ = try await URLSession.shared.data(for: request)
 	}
 
+	public func schedule(_ pushNotificationRequests: [PushNotificationRequest]) async throws {
+		let data = try encoder.encode(pushNotificationRequests)
+
+		let url = url.appending(path: "schedule/multiple")
+		var request = URLRequest(url: url)
+		request.httpMethod = "POST"
+		request.httpBody = data
+
+		_ = try await URLSession.shared.data(for: request)
+	}
+
 	public func verify() async -> Bool {
 		do {
 			let (data, _) = try await URLSession.shared.data(from: url.appendingPathComponent("ping"))

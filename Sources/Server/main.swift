@@ -61,6 +61,10 @@ final class App {
 			try await SchedulerRoute().handle(request: request, context: context)
 		}
 
+		router.post("schedule/multiple") { request, context -> String in
+			try await SchedulerRoute().handleMultiple(request: request, context: context)
+		}
+
 		router.get("status/:id") { request, context -> String in
 			try await StatusRoute().handle(request: request, context: context)
 		}

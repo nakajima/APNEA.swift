@@ -28,4 +28,22 @@ struct SchedulerRoute: Route, Sendable {
 
 		return "OK"
 	}
+
+	func handleMultiple(request: HummingbirdCore.Request, context: APNEAContext) async throws -> String {
+		let requests = try await JSONDecoder().decode([PushNotificationRequest].self, from: request.body.collect(upTo: context.maxUploadSize))
+
+		for request in requests {
+			guard request.topic.starts(with: App.env("TOPIC")) else {
+				continue
+			}
+
+			do {
+				try await context.scheduler.schedule(request)
+			} catch {
+				context.logger.error("error scheduling \(request.id): \(error)")
+			}
+		}
+
+		return "OK"
+	}
 }
