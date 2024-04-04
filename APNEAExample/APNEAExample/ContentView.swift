@@ -8,6 +8,7 @@
 import ActivityKit
 import APNEAClient
 import APNEACore
+import APNSCore
 import SwiftUI
 import UserNotifications
 import UserNotificationsUI
@@ -107,12 +108,12 @@ struct ContentView: View {
 	var receivedNotifications: [UNNotification] = []
 
 	enum LiveActivityStatus {
-		case unknown, requested(Date), active(Activity<APNEAActivityAttributes>?, String), error(String)
+		case unknown, requested(Date), active(Activity<APNEALiveActivityAttributes>?, String), error(String)
 
 		var disableButton: Bool {
-			switch self {
-			case .active(let activity, _):
-				activity == nil
+			return switch self {
+			case let .active(activity, _):
+				activity != nil
 			default:
 				true
 			}
@@ -207,7 +208,7 @@ struct ContentView: View {
 					}
 					.disabled(liveActivityStatus.disableButton)
 					.task {
-						for await activity in Activity<APNEAActivityAttributes>.activityUpdates {
+						for await activity in Activity<APNEALiveActivityAttributes>.activityUpdates {
 							self.liveActivityStatus = .active(activity, currentActivityToken)
 						}
 					}
@@ -230,7 +231,7 @@ struct ContentView: View {
 
 							Button("End") {
 								Task.detached(priority: .userInitiated) {
-									for activity in Activity<APNEAActivityAttributes>.activities {
+									for activity in Activity<APNEALiveActivityAttributes>.activities {
 										await activity.end(nil, dismissalPolicy: .immediate)
 									}
 								}
@@ -373,10 +374,19 @@ struct ContentView: View {
 		let id = UUID()
 
 		Task {
+			let alertMessage = APNSAlertNotification(
+				alert: .init(title: .raw(Date().formatted()), body: .raw(Date().formatted())),
+				expiration: .immediately,
+				priority: .immediately,
+				topic: Bundle.main.bundleIdentifier!
+			)
+
+			let message = try JSONEncoder().encode(alertMessage)
+
 			do {
 				try await client.schedule(.init(
 					id: id,
-					message: .alert(date.formatted()),
+					message: message,
 					deviceToken: pushToken.map { String(format: "%02x", $0) }.joined(),
 					pushType: .alert,
 					expiration: .immediately,
@@ -407,9 +417,9 @@ struct ContentView: View {
 
 	func requestLiveActivityToken() async throws {
 		let activity = try Activity.request(
-			attributes: APNEAActivityAttributes(),
+			attributes: APNEALiveActivityAttributes(name: "hi"),
 			content: ActivityContent(
-				state: ["emoji": .string("🤑")],
+				state: APNEALiveActivityAttributes.ContentState(emoji: "⚙️"),
 				staleDate: nil,
 				relevanceScore: 100
 			),
@@ -421,13 +431,13 @@ struct ContentView: View {
 			await activity.end(nil)
 		}
 
-		for await update in Activity<APNEAActivityAttributes>.pushToStartTokenUpdates {
+		for await update in Activity<APNEALiveActivityAttributes>.pushToStartTokenUpdates {
 			liveActivityStatus = .active(currentActivity, update.map { String(format: "%02x", $0) }.joined())
 		}
 	}
 
-	var currentActivity: Activity<APNEAActivityAttributes>? {
-		if case let .active(activity, string) = liveActivityStatus {
+	var currentActivity: Activity<APNEALiveActivityAttributes>? {
+		if case let .active(activity, _) = liveActivityStatus {
 			return activity
 		} else {
 			return nil
@@ -435,7 +445,7 @@ struct ContentView: View {
 	}
 
 	var currentActivityToken: String {
-		if case let .active(_, token) = self.liveActivityStatus {
+		if case let .active(_, token) = liveActivityStatus {
 			token
 		} else {
 			"NO TOKEN"
@@ -450,13 +460,28 @@ struct ContentView: View {
 			return
 		}
 
-		print("GOT A PUSH TOKEN \(token)")
-
 		Task {
+			let liveActivityMessage = APNSStartLiveActivityNotification<APNEALiveActivityAttributes, APNEALiveActivityAttributes.ContentState>(
+				expiration: .immediately,
+				priority: .immediately,
+				appID: Bundle.main.bundleIdentifier!,
+				contentState: .init(emoji: "🏎️"),
+				timestamp: Int(Date().timeIntervalSince1970),
+				dismissalDate: .immediately,
+				attributes: .init(name: "Sup"),
+				attributesType: "APNEALiveActivityAttributes",
+				alert: .init(
+					title: .raw("Hi"),
+					body: .raw("Hi")
+				)
+			)
+
+			let message = try JSONEncoder().encode(liveActivityMessage)
+
 			do {
 				try await client.schedule(.init(
 					id: id,
-					message: .liveactivity("start", ["emoji": .string("🙊")]),
+					message: message,
 					deviceToken: token,
 					pushType: .liveactivity,
 					expiration: .immediately,

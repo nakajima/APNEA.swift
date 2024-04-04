@@ -8,33 +8,6 @@
 import APNSCore
 import Foundation
 
-public struct APNEAActivityAttributes: Codable, Sendable, Hashable {
-	public enum Value: Codable, Sendable, Hashable, CustomStringConvertible {
-		case string(String), int(Int), double(Double)
-
-		public var description: String {
-			switch self {
-			case let .string(string):
-				string
-			case let .int(int):
-				"\(int)"
-			case let .double(double):
-				"\(double)"
-			}
-		}
-	}
-
-	public typealias ContentState = [String: Value]
-
-	public init() throws {}
-}
-
-#if canImport(ActivityKit)
-	import ActivityKit
-
-	extension APNEAActivityAttributes: ActivityAttributes {}
-#endif
-
 public struct LiveActivityMessage: Codable, Sendable {
 	var pushToken: String
 	var rawEvent: String // APNSLiveActivityNotificationEvent
@@ -43,10 +16,6 @@ public struct LiveActivityMessage: Codable, Sendable {
 		self.pushToken = pushToken
 		self.rawEvent = rawEvent
 	}
-}
-
-public enum Message: Codable, Sendable {
-	case background, alert(String), liveactivity(String, APNEAActivityAttributes.ContentState)
 }
 
 public struct PushNotificationSchedule: Sendable, Codable {
@@ -79,7 +48,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 	public var apnsID: UUID?
 	public var topic: String
 	public var collapseID: String?
-	public var message: Message
+	public var message: Data
 	public var schedule: PushNotificationSchedule
 
 	enum CodingKeys: String, CodingKey {
@@ -117,7 +86,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		self.apnsID = try values.decodeIfPresent(UUID.self, forKey: .apnsID)
 		self.topic = try values.decode(String.self, forKey: .topic)
 		self.collapseID = try values.decodeIfPresent(String.self, forKey: .collapseID)
-		self.message = try values.decode(Message.self, forKey: .message)
+		self.message = try values.decode(Data.self, forKey: .message)
 		self.schedule = try values.decode(PushNotificationSchedule.self, forKey: .schedule)
 	}
 
@@ -138,7 +107,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 
 	public init(
 		id: UUID,
-		message: Message,
+		message: Data,
 		deviceToken: String,
 		pushType: APNSPushType,
 		expiration: APNSNotificationExpiration?,
@@ -158,49 +127,5 @@ public struct PushNotificationRequest: Codable, Sendable {
 		self.collapseID = collapseID
 		self.message = message
 		self.schedule = schedule
-	}
-
-	public func toAPNS() -> APNSMessage {
-		switch message {
-		case let .liveactivity(event, attributes):
-			let event: any APNSLiveActivityNotificationEvent = switch event {
-			case "update": .update
-			case "end": .end
-			case "start": APNSLiveActivityNotificationEventStart(
-					attributes: .init(
-						type: "APNEAActivityAttributes",
-						state: attributes
-					),
-					alert: .init(title: .raw("Update"), body: .raw("Body"))
-				)
-			default: .update
-			}
-
-			return APNSLiveActivityNotification(
-				expiration: .none,
-				priority: .immediately,
-				topic: topic,
-				contentState: attributes,
-				event: event,
-				timestamp: Int(Date().timeIntervalSince1970)
-			)
-		case .background:
-			return APNSBackgroundNotification(
-				expiration: expiration ?? .immediately,
-				topic: topic,
-				payload: Payload(),
-				apnsID: nil // TODO:
-			)
-		case let .alert(string):
-			return APNSAlertNotification(
-				alert: .init(
-					title: .raw(string)
-				),
-				expiration: expiration ?? .immediately,
-				priority: priority ?? .immediately,
-				topic: topic,
-				payload: Payload()
-			)
-		}
 	}
 }

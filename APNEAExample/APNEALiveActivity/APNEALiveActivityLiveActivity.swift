@@ -2,20 +2,19 @@
 //  APNEALiveActivityLiveActivity.swift
 //  APNEALiveActivity
 //
-//  Created by Pat Nakajima on 4/3/24.
+//  Created by Pat Nakajima on 4/4/24.
 //
 
 import ActivityKit
-import APNEACore
 import SwiftUI
 import WidgetKit
 
 struct APNEALiveActivityLiveActivity: Widget {
 	var body: some WidgetConfiguration {
-		ActivityConfiguration(for: APNEAActivityAttributes.self) { context in
+		ActivityConfiguration(for: APNEALiveActivityAttributes.self) { context in
 			// Lock screen/banner UI goes here
 			VStack {
-				Text("Hello \(context.state["emoji"]!)")
+				Text("Hello \(context.state.emoji)")
 			}
 			.activityBackgroundTint(Color.cyan)
 			.activitySystemActionForegroundColor(Color.black)
@@ -31,15 +30,15 @@ struct APNEALiveActivityLiveActivity: Widget {
 					Text("Trailing")
 				}
 				DynamicIslandExpandedRegion(.bottom) {
-					Text("Bottom \(context.state["emoji"]!)")
+					Text("Bottom \(context.state.emoji)")
 					// more content
 				}
 			} compactLeading: {
 				Text("L")
 			} compactTrailing: {
-				Text("T \(context.state["emoji"]!)")
+				Text("T \(context.state.emoji)")
 			} minimal: {
-				Text("\(context.state["emoji"]!)")
+				Text(context.state.emoji)
 			}
 			.widgetURL(URL(string: "http://www.apple.com"))
 			.keylineTint(Color.red)
@@ -47,9 +46,25 @@ struct APNEALiveActivityLiveActivity: Widget {
 	}
 }
 
-//
-// #Preview("Notification", as: .content, using: APNEAActivityAttributes.preview) {
-//	APNEALiveActivityLiveActivity()
-// } contentStates: {
-//	APNEAActivityAttributes.ContentState(["emoji": APNEAActivityAttributes.Value.string("😻")])
-// }
+private extension APNEALiveActivityAttributes {
+	static var preview: APNEALiveActivityAttributes {
+		APNEALiveActivityAttributes(name: "World")
+	}
+}
+
+private extension APNEALiveActivityAttributes.ContentState {
+	static var smiley: APNEALiveActivityAttributes.ContentState {
+		APNEALiveActivityAttributes.ContentState(emoji: "😀")
+	}
+
+	static var starEyes: APNEALiveActivityAttributes.ContentState {
+		APNEALiveActivityAttributes.ContentState(emoji: "🤩")
+	}
+}
+
+#Preview("Notification", as: .content, using: APNEALiveActivityAttributes.preview) {
+	APNEALiveActivityLiveActivity()
+} contentStates: {
+	APNEALiveActivityAttributes.ContentState.smiley
+	APNEALiveActivityAttributes.ContentState.starEyes
+}

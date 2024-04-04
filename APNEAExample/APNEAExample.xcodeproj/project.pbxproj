@@ -7,29 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A6259C0A2BBDC7F300A32024 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6259C092BBDC7F300A32024 /* WidgetKit.framework */; };
-		A6259C0C2BBDC7F300A32024 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6259C0B2BBDC7F300A32024 /* SwiftUI.framework */; };
-		A6259C0F2BBDC7F300A32024 /* APNEALiveActivityBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6259C0E2BBDC7F300A32024 /* APNEALiveActivityBundle.swift */; };
-		A6259C112BBDC7F300A32024 /* APNEALiveActivityLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6259C102BBDC7F300A32024 /* APNEALiveActivityLiveActivity.swift */; };
-		A6259C132BBDC7F300A32024 /* APNEALiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6259C122BBDC7F300A32024 /* APNEALiveActivity.swift */; };
-		A6259C152BBDC7F500A32024 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6259C142BBDC7F500A32024 /* Assets.xcassets */; };
-		A6259C192BBDC7F500A32024 /* APNEALiveActivityExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A6259C082BBDC7F300A32024 /* APNEALiveActivityExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A6259C1F2BBDCADD00A32024 /* APNEALiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6259C1E2BBDCADD00A32024 /* APNEALiveActivityAttributes.swift */; };
-		A6259C202BBDCADD00A32024 /* APNEALiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6259C1E2BBDCADD00A32024 /* APNEALiveActivityAttributes.swift */; };
-		A6259C232BBDD8D300A32024 /* APNEAClient in Frameworks */ = {isa = PBXBuildFile; productRef = A6259C222BBDD8D300A32024 /* APNEAClient */; };
 		A6353CF22BB9FC9600C2A872 /* APNEAExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6353CF12BB9FC9600C2A872 /* APNEAExampleApp.swift */; };
 		A6353CF42BB9FC9600C2A872 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6353CF32BB9FC9600C2A872 /* ContentView.swift */; };
 		A6353CF62BB9FC9700C2A872 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6353CF52BB9FC9700C2A872 /* Assets.xcassets */; };
 		A6353CFA2BB9FC9700C2A872 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6353CF92BB9FC9700C2A872 /* Preview Assets.xcassets */; };
+		A65CD0572BBF1B4900F352FC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6259C092BBDC7F300A32024 /* WidgetKit.framework */; };
+		A65CD0582BBF1B4900F352FC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6259C0B2BBDC7F300A32024 /* SwiftUI.framework */; };
+		A65CD05B2BBF1B4900F352FC /* APNEALiveActivityBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65CD05A2BBF1B4900F352FC /* APNEALiveActivityBundle.swift */; };
+		A65CD05D2BBF1B4900F352FC /* APNEALiveActivityLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65CD05C2BBF1B4900F352FC /* APNEALiveActivityLiveActivity.swift */; };
+		A65CD05F2BBF1B4900F352FC /* APNEALiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65CD05E2BBF1B4900F352FC /* APNEALiveActivity.swift */; };
+		A65CD0612BBF1B4A00F352FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A65CD0602BBF1B4A00F352FC /* Assets.xcassets */; };
+		A65CD0652BBF1B4A00F352FC /* APNEALiveActivityExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A65CD0562BBF1B4900F352FC /* APNEALiveActivityExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A65CD0692BBF1B8100F352FC /* APNEALiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6259C1E2BBDCADD00A32024 /* APNEALiveActivityAttributes.swift */; };
 		A6DCE1782BBA013A0014DB9C /* APNEAClient in Frameworks */ = {isa = PBXBuildFile; productRef = A6DCE1772BBA013A0014DB9C /* APNEAClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A6259C172BBDC7F500A32024 /* PBXContainerItemProxy */ = {
+		A65CD0632BBF1B4A00F352FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A6353CE62BB9FC9600C2A872 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A6259C072BBDC7F300A32024;
+			remoteGlobalIDString = A65CD0552BBF1B4900F352FC;
 			remoteInfo = APNEALiveActivityExtension;
 		};
 /* End PBXContainerItemProxy section */
@@ -41,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A6259C192BBDC7F500A32024 /* APNEALiveActivityExtension.appex in Embed Foundation Extensions */,
+				A65CD0652BBF1B4A00F352FC /* APNEALiveActivityExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,14 +48,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A6259C082BBDC7F300A32024 /* APNEALiveActivityExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNEALiveActivityExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6259C092BBDC7F300A32024 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		A6259C0B2BBDC7F300A32024 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		A6259C0E2BBDC7F300A32024 /* APNEALiveActivityBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivityBundle.swift; sourceTree = "<group>"; };
-		A6259C102BBDC7F300A32024 /* APNEALiveActivityLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivityLiveActivity.swift; sourceTree = "<group>"; };
-		A6259C122BBDC7F300A32024 /* APNEALiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivity.swift; sourceTree = "<group>"; };
-		A6259C142BBDC7F500A32024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A6259C162BBDC7F500A32024 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A6259C1E2BBDCADD00A32024 /* APNEALiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivityAttributes.swift; sourceTree = "<group>"; };
 		A6259C212BBDCF1900A32024 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A629548B2BBA00A0007AB05B /* APNEA */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = APNEA; path = ..; sourceTree = "<group>"; };
@@ -66,19 +59,15 @@
 		A6353CF52BB9FC9700C2A872 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6353CF72BB9FC9700C2A872 /* APNEAExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNEAExample.entitlements; sourceTree = "<group>"; };
 		A6353CF92BB9FC9700C2A872 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A65CD0562BBF1B4900F352FC /* APNEALiveActivityExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNEALiveActivityExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A65CD05A2BBF1B4900F352FC /* APNEALiveActivityBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivityBundle.swift; sourceTree = "<group>"; };
+		A65CD05C2BBF1B4900F352FC /* APNEALiveActivityLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivityLiveActivity.swift; sourceTree = "<group>"; };
+		A65CD05E2BBF1B4900F352FC /* APNEALiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNEALiveActivity.swift; sourceTree = "<group>"; };
+		A65CD0602BBF1B4A00F352FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A65CD0622BBF1B4A00F352FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A6259C052BBDC7F300A32024 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A6259C0C2BBDC7F300A32024 /* SwiftUI.framework in Frameworks */,
-				A6259C232BBDD8D300A32024 /* APNEAClient in Frameworks */,
-				A6259C0A2BBDC7F300A32024 /* WidgetKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A6353CEB2BB9FC9600C2A872 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -87,21 +76,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A65CD0532BBF1B4900F352FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A65CD0582BBF1B4900F352FC /* SwiftUI.framework in Frameworks */,
+				A65CD0572BBF1B4900F352FC /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A6259C0D2BBDC7F300A32024 /* APNEALiveActivity */ = {
-			isa = PBXGroup;
-			children = (
-				A6259C0E2BBDC7F300A32024 /* APNEALiveActivityBundle.swift */,
-				A6259C102BBDC7F300A32024 /* APNEALiveActivityLiveActivity.swift */,
-				A6259C122BBDC7F300A32024 /* APNEALiveActivity.swift */,
-				A6259C142BBDC7F500A32024 /* Assets.xcassets */,
-				A6259C162BBDC7F500A32024 /* Info.plist */,
-			);
-			path = APNEALiveActivity;
-			sourceTree = "<group>";
-		};
 		A629548C2BBA00AC007AB05B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,7 +102,7 @@
 			children = (
 				A629548B2BBA00A0007AB05B /* APNEA */,
 				A6353CF02BB9FC9600C2A872 /* APNEAExample */,
-				A6259C0D2BBDC7F300A32024 /* APNEALiveActivity */,
+				A65CD0592BBF1B4900F352FC /* APNEALiveActivity */,
 				A6353CEF2BB9FC9600C2A872 /* Products */,
 				A629548C2BBA00AC007AB05B /* Frameworks */,
 			);
@@ -126,7 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				A6353CEE2BB9FC9600C2A872 /* APNEAExample.app */,
-				A6259C082BBDC7F300A32024 /* APNEALiveActivityExtension.appex */,
+				A65CD0562BBF1B4900F352FC /* APNEALiveActivityExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,29 +139,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		A65CD0592BBF1B4900F352FC /* APNEALiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				A65CD05A2BBF1B4900F352FC /* APNEALiveActivityBundle.swift */,
+				A65CD05C2BBF1B4900F352FC /* APNEALiveActivityLiveActivity.swift */,
+				A65CD05E2BBF1B4900F352FC /* APNEALiveActivity.swift */,
+				A65CD0602BBF1B4A00F352FC /* Assets.xcassets */,
+				A65CD0622BBF1B4A00F352FC /* Info.plist */,
+			);
+			path = APNEALiveActivity;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A6259C072BBDC7F300A32024 /* APNEALiveActivityExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A6259C1D2BBDC7F500A32024 /* Build configuration list for PBXNativeTarget "APNEALiveActivityExtension" */;
-			buildPhases = (
-				A6259C042BBDC7F300A32024 /* Sources */,
-				A6259C052BBDC7F300A32024 /* Frameworks */,
-				A6259C062BBDC7F300A32024 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = APNEALiveActivityExtension;
-			packageProductDependencies = (
-				A6259C222BBDD8D300A32024 /* APNEAClient */,
-			);
-			productName = APNEALiveActivityExtension;
-			productReference = A6259C082BBDC7F300A32024 /* APNEALiveActivityExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		A6353CED2BB9FC9600C2A872 /* APNEAExample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A6353CFD2BB9FC9700C2A872 /* Build configuration list for PBXNativeTarget "APNEAExample" */;
@@ -188,7 +166,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				A6259C182BBDC7F500A32024 /* PBXTargetDependency */,
+				A65CD0642BBF1B4A00F352FC /* PBXTargetDependency */,
 			);
 			name = APNEAExample;
 			packageProductDependencies = (
@@ -197,6 +175,23 @@
 			productName = APNEAExample;
 			productReference = A6353CEE2BB9FC9600C2A872 /* APNEAExample.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A65CD0552BBF1B4900F352FC /* APNEALiveActivityExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A65CD0662BBF1B4A00F352FC /* Build configuration list for PBXNativeTarget "APNEALiveActivityExtension" */;
+			buildPhases = (
+				A65CD0522BBF1B4900F352FC /* Sources */,
+				A65CD0532BBF1B4900F352FC /* Frameworks */,
+				A65CD0542BBF1B4900F352FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = APNEALiveActivityExtension;
+			productName = APNEALiveActivityExtension;
+			productReference = A65CD0562BBF1B4900F352FC /* APNEALiveActivityExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -208,10 +203,10 @@
 				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
-					A6259C072BBDC7F300A32024 = {
+					A6353CED2BB9FC9600C2A872 = {
 						CreatedOnToolsVersion = 15.3;
 					};
-					A6353CED2BB9FC9600C2A872 = {
+					A65CD0552BBF1B4900F352FC = {
 						CreatedOnToolsVersion = 15.3;
 					};
 				};
@@ -230,20 +225,12 @@
 			projectRoot = "";
 			targets = (
 				A6353CED2BB9FC9600C2A872 /* APNEAExample */,
-				A6259C072BBDC7F300A32024 /* APNEALiveActivityExtension */,
+				A65CD0552BBF1B4900F352FC /* APNEALiveActivityExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A6259C062BBDC7F300A32024 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A6259C152BBDC7F500A32024 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A6353CEC2BB9FC9600C2A872 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -253,20 +240,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		A6259C042BBDC7F300A32024 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+		A65CD0542BBF1B4900F352FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6259C0F2BBDC7F300A32024 /* APNEALiveActivityBundle.swift in Sources */,
-				A6259C112BBDC7F300A32024 /* APNEALiveActivityLiveActivity.swift in Sources */,
-				A6259C132BBDC7F300A32024 /* APNEALiveActivity.swift in Sources */,
-				A6259C202BBDCADD00A32024 /* APNEALiveActivityAttributes.swift in Sources */,
+				A65CD0612BBF1B4A00F352FC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
 		A6353CEA2BB9FC9600C2A872 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -277,76 +261,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A65CD0522BBF1B4900F352FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A65CD05B2BBF1B4900F352FC /* APNEALiveActivityBundle.swift in Sources */,
+				A65CD05D2BBF1B4900F352FC /* APNEALiveActivityLiveActivity.swift in Sources */,
+				A65CD05F2BBF1B4900F352FC /* APNEALiveActivity.swift in Sources */,
+				A65CD0692BBF1B8100F352FC /* APNEALiveActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A6259C182BBDC7F500A32024 /* PBXTargetDependency */ = {
+		A65CD0642BBF1B4A00F352FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A6259C072BBDC7F300A32024 /* APNEALiveActivityExtension */;
-			targetProxy = A6259C172BBDC7F500A32024 /* PBXContainerItemProxy */;
+			target = A65CD0552BBF1B4900F352FC /* APNEALiveActivityExtension */;
+			targetProxy = A65CD0632BBF1B4A00F352FC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		A6259C1B2BBDC7F500A32024 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Z773AM52SJ;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = APNEALiveActivity/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = APNEALiveActivity;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = fm.folder.APNEAExample.APNEALiveActivity;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A6259C1C2BBDC7F500A32024 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Z773AM52SJ;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = APNEALiveActivity/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = APNEALiveActivity;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = fm.folder.APNEAExample.APNEALiveActivity;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		A6353CFB2BB9FC9700C2A872 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -543,18 +479,68 @@
 			};
 			name = Release;
 		};
+		A65CD0672BBF1B4A00F352FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z773AM52SJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = APNEALiveActivity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = APNEALiveActivity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fm.folder.APNEAExample.APNEALiveActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A65CD0682BBF1B4A00F352FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z773AM52SJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = APNEALiveActivity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = APNEALiveActivity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fm.folder.APNEAExample.APNEALiveActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A6259C1D2BBDC7F500A32024 /* Build configuration list for PBXNativeTarget "APNEALiveActivityExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A6259C1B2BBDC7F500A32024 /* Debug */,
-				A6259C1C2BBDC7F500A32024 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		A6353CE92BB9FC9600C2A872 /* Build configuration list for PBXProject "APNEAExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -573,13 +559,18 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		A65CD0662BBF1B4A00F352FC /* Build configuration list for PBXNativeTarget "APNEALiveActivityExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A65CD0672BBF1B4A00F352FC /* Debug */,
+				A65CD0682BBF1B4A00F352FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A6259C222BBDD8D300A32024 /* APNEAClient */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = APNEAClient;
-		};
 		A6DCE1772BBA013A0014DB9C /* APNEAClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = APNEAClient;

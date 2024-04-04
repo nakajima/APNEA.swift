@@ -28,7 +28,7 @@ import Observation
 
 	public func statuses(ids: [UUID]) async throws -> [UUID: ScheduledPushStatus] {
 		let url = url.appending(path: "statuses")
-		
+
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		request.httpBody = try JSONEncoder().encode(ids)

@@ -1,13 +1,13 @@
 {
-  "originHash" : "08afd7499aad758d4d0166a080b52890bf11efdc1059838a41c36587b51430f1",
+  "originHash" : "6cfc854ec6cf03672a941d48f31e940ba8d47b6dabb3a22f902d18093e8192e6",
   "pins" : [
     {
       "identity" : "apnswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nakajima/APNSwift",
       "state" : {
-        "branch" : "start-live-activities",
-        "revision" : "93565bda2238e6b4b1995bf553dd3a37981f1048"
+        "branch" : "send-raw",
+        "revision" : "312725c548fe6fbf50c493d2f6bcbece7a333e7b"
       }
     },
     {
@@ -33,7 +33,7 @@
       "location" : "https://github.com/nakajima/Jobsy.swift",
       "state" : {
         "branch" : "main",
-        "revision" : "44b9028bdb982d73e0ad5b42cbf60dac3d9d84c3"
+        "revision" : "3b554778ab10cc21a30c5ca7ab4526d6fba5fc7a"
       }
     },
     {
