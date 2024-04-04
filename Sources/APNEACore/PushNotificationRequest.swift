@@ -45,10 +45,6 @@ public struct LiveActivityMessage: Codable, Sendable {
 	}
 }
 
-public enum Message: Codable, Sendable {
-	case background, alert(String), liveactivity(String, APNEAActivityAttributes.ContentState)
-}
-
 public struct PushNotificationSchedule: Sendable, Codable {
 	public var occurrences: Int
 	public var interval: TimeInterval
@@ -138,7 +134,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 
 	public init(
 		id: UUID,
-		message: Message,
+		message: APNSMessage,
 		deviceToken: String,
 		pushType: APNSPushType,
 		expiration: APNSNotificationExpiration?,

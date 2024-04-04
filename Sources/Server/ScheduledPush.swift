@@ -34,7 +34,30 @@ actor PushScheduler {
 	}
 
 	func cancel(jobID: String) async throws {
-		try await scheduler.cancel(jobID: id)
+		try await scheduler.cancel(jobID: jobID)
+	}
+
+	func statuses(ids: [UUID]) async -> [UUID: ScheduledPushStatus] {
+		await withTaskGroup(of: (ScheduledPushStatus?).self) { group in
+			for id in ids {
+				group.addTask {
+					do {
+						return try await self.status(id: id)
+					} catch {
+						return nil
+					}
+				}
+			}
+
+			var result: [UUID: ScheduledPushStatus] = [:]
+
+			for await status in group {
+				guard let status else { continue }
+				result[status.id] = status
+			}
+
+			return result
+		}
 	}
 
 	func status(id: UUID) async throws -> ScheduledPushStatus? {

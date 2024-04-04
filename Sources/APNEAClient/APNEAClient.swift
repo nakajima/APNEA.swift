@@ -27,23 +27,14 @@ import Observation
 	}
 
 	public func statuses(ids: [UUID]) async throws -> [UUID: ScheduledPushStatus] {
-		return try await withThrowingTaskGroup(of: ScheduledPushStatus?.self) { group in
-			for id in ids {
-				group.addTask {
-					try? await self.status(id: id)
-				}
-			}
+		let url = url.appending(path: "statuses")
+		
+		var request = URLRequest(url: url)
+		request.httpMethod = "POST"
+		request.httpBody = try JSONEncoder().encode(ids)
 
-			var result: [UUID: ScheduledPushStatus] = [:]
-
-			for try await status in group {
-				if let status {
-					result[status.id] = status
-				}
-			}
-
-			return result
-		}
+		let (data, _) = try await URLSession.shared.data(for: request)
+		return try JSONDecoder().decode([UUID: ScheduledPushStatus].self, from: data)
 	}
 
 	public func schedule(_ pushNotificationRequest: PushNotificationRequest) async throws {

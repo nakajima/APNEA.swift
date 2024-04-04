@@ -21,4 +21,12 @@ struct StatusRoute: Route, Sendable {
 			return "{}"
 		}
 	}
+
+	func handleMultiple(request: HummingbirdCore.Request, context: APNEAContext) async throws -> String {
+		let ids = try await JSONDecoder().decode([String].self, from: request.body.collect(upTo: context.maxUploadSize))
+		let uuids = ids.compactMap { UUID(uuidString: $0) }
+
+		let statuses = await context.scheduler.statuses(ids: uuids)
+		return try String(data: JSONEncoder().encode(statuses), encoding: .utf8) ?? "{}"
+	}
 }

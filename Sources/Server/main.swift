@@ -65,6 +65,10 @@ final class App {
 			try await StatusRoute().handle(request: request, context: context)
 		}
 
+		router.post("statuses") { request, context -> String in
+			try await StatusRoute().handleMultiple(request: request, context: context)
+		}
+
 		router.post("status/:id/cancel") { request, context -> String in
 			try await StatusRoute().handle(request: request, context: context)
 		}
