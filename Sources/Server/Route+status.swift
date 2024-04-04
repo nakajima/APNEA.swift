@@ -18,7 +18,6 @@ struct StatusRoute: Route, Sendable {
 		{
 			return try String(data: JSONEncoder().encode(status), encoding: .utf8) ?? "{}"
 		} else {
-			context.logger.info("no id found")
 			return "{}"
 		}
 	}
