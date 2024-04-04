@@ -9,7 +9,7 @@ import APNEACore
 import Foundation
 import Observation
 
-@Observable public final class APNEAClient {
+@Observable public final class APNEAClient: Sendable {
 	public enum Error: Swift.Error {}
 
 	let url: URL
