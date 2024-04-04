@@ -22,9 +22,8 @@ import Observation
 	public func status(id: UUID) async throws -> ScheduledPushStatus? {
 		let url = url.appending(path: "status/\(id.uuidString)")
 		let (data, _) = try await URLSession.shared.data(from: url)
-		print("STATUS \(String(data: data, encoding: .utf8)!)")
 
-		return try JSONDecoder().decode(ScheduledPushStatus.self, from: data)
+		return try? JSONDecoder().decode(ScheduledPushStatus.self, from: data)
 	}
 
 	public func statuses(ids: [UUID]) async throws -> [UUID: ScheduledPushStatus] {
