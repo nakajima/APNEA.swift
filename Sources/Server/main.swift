@@ -78,7 +78,7 @@ final class App {
 			try await StatusRoute().handle(request: request, context: context)
 		}
 
-		let application = Application(
+		var application = Application(
 			router: router,
 			configuration: .init(
 				address: .hostname(
@@ -87,6 +87,10 @@ final class App {
 				)
 			)
 		)
+
+		if let logLevel = Logger.Level(rawValue: App.env("LOG_LEVEL")) {
+			application.logger.logLevel = logLevel
+		}
 
 		scheduler.scheduler.logger = application.logger
 
