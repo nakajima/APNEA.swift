@@ -88,6 +88,8 @@ final class App {
 			)
 		)
 
+		scheduler.scheduler.logger = application.logger
+
 		try await application.runService()
 	}
 }
