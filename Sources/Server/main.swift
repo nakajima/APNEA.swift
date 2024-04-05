@@ -12,6 +12,7 @@ import Crypto
 import Foundation
 import Hummingbird
 import NIOCore
+import Logging
 
 struct ContextProvider: RouterMiddleware {
 	let scheduler: PushScheduler
@@ -41,7 +42,7 @@ final class App {
 	}
 
 	init() {
-		self.scheduler = PushScheduler()
+		self.scheduler = PushScheduler(logger: Logger(label: "APNEA"))
 		self.schedulerTask = Task {
 			await self.scheduler.run()
 		}
