@@ -60,7 +60,7 @@ struct PushNotificationJob: Job {
 
 	func perform() async throws {
 		let request = try JSONDecoder().decode(PushNotificationRequest.self, from: parameters.payload)
-		logger?.debug("sending \(try? String(data: parameters.payload, encoding: .utf8))")
+		logger?.debug("sending \(String(data: parameters.payload, encoding: .utf8))")
 
 		let headers = try await headers(for: request)
 		let response = try await APNS.send(byteBuffer: ByteBuffer(bytes: request.message), headers: headers, deviceToken: request.deviceToken)
