@@ -15,7 +15,7 @@ let APNS = APNSClient(
 			keyIdentifier: App.env("KEY_IDENTIFIER"),
 			teamIdentifier: App.env("TEAM_IDENTIFIER")
 		),
-		environment: App.env("KEY_IDENTIFIER").lowercased() == "production" ? .production : .sandbox
+		environment: App.env("ENVIRONMENT").lowercased() == "production" ? .production : .sandbox
 	),
 	eventLoopGroupProvider: .createNew,
 	responseDecoder: JSONDecoder(),
