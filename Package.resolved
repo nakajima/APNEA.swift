@@ -7,7 +7,7 @@
       "location" : "https://github.com/nakajima/APNSwift",
       "state" : {
         "branch" : "send-raw",
-        "revision" : "312725c548fe6fbf50c493d2f6bcbece7a333e7b"
+        "revision" : "28754364ba4e9bcbeef041bf33b4df3e52887bb5"
       }
     },
     {
@@ -33,7 +33,7 @@
       "location" : "https://github.com/nakajima/Jobsy.swift",
       "state" : {
         "branch" : "main",
-        "revision" : "3b554778ab10cc21a30c5ca7ab4526d6fba5fc7a"
+        "revision" : "30172c6b200f637e77294da4da2a16d9ee2a03f9"
       }
     },
     {

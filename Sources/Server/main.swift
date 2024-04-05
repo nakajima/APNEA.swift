@@ -42,7 +42,7 @@ final class App {
 	}
 
 	init() {
-		self.scheduler = PushScheduler(logger: Logger(label: "APNEA"))
+		self.scheduler = PushScheduler()
 		self.schedulerTask = Task {
 			await self.scheduler.run()
 		}

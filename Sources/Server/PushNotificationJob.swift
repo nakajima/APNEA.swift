@@ -11,6 +11,7 @@ import Foundation
 import Jobsy
 import NIOCore
 import NIOHTTP1
+import Logging
 
 struct PushNotificationJob: Job {
 	struct Parameters: Codable {
@@ -19,6 +20,7 @@ struct PushNotificationJob: Job {
 
 	var id: String
 	var parameters: Parameters
+	var logger = Logger(label: "PushNotificationJob")
 
 	func headers(for request: PushNotificationRequest) async throws -> HTTPHeaders {
 		var headers = APNS.defaultRequestHeaders
@@ -60,7 +62,9 @@ struct PushNotificationJob: Job {
 
 	func perform() async throws {
 		let request = try JSONDecoder().decode(PushNotificationRequest.self, from: parameters.payload)
-		logger?.debug("sending \(String(data: parameters.payload, encoding: .utf8))")
+		let logger = self.logger ?? Logger(label: "Jobsy")
+
+		logger.debug("sending \(String(data: parameters.payload, encoding: .utf8))")
 
 		let headers = try await headers(for: request)
 		let response = try await APNS.send(byteBuffer: ByteBuffer(bytes: request.message), headers: headers, deviceToken: request.deviceToken)

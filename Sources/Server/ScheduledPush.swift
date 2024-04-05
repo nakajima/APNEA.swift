@@ -25,15 +25,14 @@ struct ScheduledPush: Codable {
 
 // Ummmm this should probably be better
 actor PushScheduler {
-	var logger: Logger?
+	var logger: Logger = Logger(label: "PushScheduler")
 	let scheduler: JobScheduler
 
 	enum Error: Swift.Error {
 		case unsupportedMessage(String)
 	}
 
-	init(logger: Logger? = nil) {
-		self.logger = logger
+	init() {
 		self.scheduler = JobScheduler(redis: .url(App.env("REDIS_URL")), kinds: [PushNotificationJob.self], logger: logger)
 	}
 
@@ -95,7 +94,7 @@ actor PushScheduler {
 	}
 
 	func run() async {
-		await Runner(pollInterval: 1).run(connection: .url(App.env("REDIS_URL")), for: [PushNotificationJob.self])
+		await Runner(pollInterval: 1).run(connection: .url(App.env("REDIS_URL")), for: [PushNotificationJob.self], logger: logger)
 	}
 
 	func schedule(_ request: PushNotificationRequest) async throws {
