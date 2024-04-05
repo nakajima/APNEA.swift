@@ -42,7 +42,7 @@ final class App {
 
 	init() {
 		self.scheduler = PushScheduler()
-		self.schedulerTask = Task.detached {
+		self.schedulerTask = Task {
 			await self.scheduler.run()
 		}
 	}
