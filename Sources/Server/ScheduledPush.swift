@@ -14,7 +14,7 @@ import Logging
 import MessagePack
 import RediStack
 
-struct ScheduledPush: Codable {
+struct ScheduledPush: Codable, Sendable {
 	var id: String
 	var occurrences: Int = 1
 	var interval: TimeInterval
