@@ -19,14 +19,14 @@ import Observation
 		self.url = url
 	}
 
-	public func status(id: UUID) async throws -> ScheduledPushStatus? {
-		let url = url.appending(path: "status/\(id.uuidString)")
+	public func status(id: String) async throws -> ScheduledPushStatus? {
+		let url = url.appending(path: "status/\(id)")
 		let (data, _) = try await URLSession.shared.data(from: url)
 
 		return try? JSONDecoder().decode(ScheduledPushStatus.self, from: data)
 	}
 
-	public func statuses(ids: [UUID]) async throws -> [UUID: ScheduledPushStatus] {
+	public func statuses(ids: [String]) async throws -> [String: ScheduledPushStatus] {
 		let url = url.appending(path: "statuses")
 
 		var request = URLRequest(url: url)
@@ -34,7 +34,7 @@ import Observation
 		request.httpBody = try JSONEncoder().encode(ids)
 
 		let (data, _) = try await URLSession.shared.data(for: request)
-		return try JSONDecoder().decode([UUID: ScheduledPushStatus].self, from: data)
+		return try JSONDecoder().decode([String: ScheduledPushStatus].self, from: data)
 	}
 
 	public func schedule(_ pushNotificationRequest: PushNotificationRequest) async throws {

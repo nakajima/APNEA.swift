@@ -15,7 +15,7 @@ import MessagePack
 import RediStack
 
 struct ScheduledPush: Codable {
-	var id: UUID
+	var id: String
 	var occurrences: Int = 1
 	var interval: TimeInterval
 	var nextPush: Date
@@ -33,14 +33,14 @@ actor PushScheduler {
 	}
 
 	init() {
-		self.scheduler = JobScheduler(redis: .url(App.env("REDIS_URL")), kinds: [PushNotificationJob.self], logger: logger)
+		self.scheduler = JobScheduler(redis: .url(App.env("REDIS_URL")), kinds: [PushNotificationJob.self], queue: App.env("QUEUE", default: "default"), logger: logger)
 	}
 
 	func cancel(jobID: String) async throws {
 		try await scheduler.cancel(jobID: jobID)
 	}
 
-	func statuses(ids: [UUID]) async -> [UUID: ScheduledPushStatus] {
+	func statuses(ids: [String]) async -> [String: ScheduledPushStatus] {
 		await withTaskGroup(of: (ScheduledPushStatus?).self) { group in
 			for id in ids {
 				group.addTask {
@@ -52,7 +52,7 @@ actor PushScheduler {
 				}
 			}
 
-			var result: [UUID: ScheduledPushStatus] = [:]
+			var result: [String: ScheduledPushStatus] = [:]
 
 			for await status in group {
 				guard let status else { continue }
@@ -63,8 +63,8 @@ actor PushScheduler {
 		}
 	}
 
-	func status(id: UUID) async throws -> ScheduledPushStatus? {
-		if case let .scheduled(schedule) = try await scheduler.status(jobID: id.uuidString) {
+	func status(id: String) async throws -> ScheduledPushStatus? {
+		if case let .scheduled(schedule) = try await scheduler.status(jobID: id) {
 			let remaining: Int
 			let interval: TimeInterval
 
@@ -94,12 +94,17 @@ actor PushScheduler {
 	}
 
 	func run() async {
-		await Runner(pollInterval: 1).run(connection: .url(App.env("REDIS_URL")), for: [PushNotificationJob.self], logger: logger)
+		await Runner(pollInterval: 1).run(
+			connection: .url(App.env("REDIS_URL")),
+			for: [PushNotificationJob.self],
+			queue: App.env("QUEUE", default: "default"),
+			logger: logger
+		)
 	}
 
 	func schedule(_ request: PushNotificationRequest) async throws {
 		let job = try PushNotificationJob(
-			id: request.id.uuidString,
+			id: request.id,
 			parameters: .init(payload: JSONEncoder().encode(request))
 		)
 

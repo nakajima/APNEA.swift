@@ -8,9 +8,9 @@
 import Foundation
 
 struct PushSchedulerSnapshot: Codable {
-	var schedules: [UUID: ScheduledPush]
+	var schedules: [String: ScheduledPush]
 	var errored: [ScheduledPush]
-	var completedIDs: Set<UUID>
+	var completedIDs: Set<String>
 
 	var description: String {
 		let encoder = JSONEncoder()

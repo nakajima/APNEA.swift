@@ -40,7 +40,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 		public init() {}
 	}
 
-	public var id: UUID
+	public var id: String
 	public var deviceToken: String
 	public var pushType: APNSPushType
 	public var expiration: APNSNotificationExpiration?
@@ -57,7 +57,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 
 	public init(from decoder: any Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
-		self.id = try values.decode(UUID.self, forKey: .id)
+		self.id = try values.decode(String.self, forKey: .id)
 		self.deviceToken = try values.decode(String.self, forKey: .deviceToken)
 
 		let pushTypeString = try values.decode(String.self, forKey: .pushType)
@@ -106,7 +106,7 @@ public struct PushNotificationRequest: Codable, Sendable {
 	}
 
 	public init(
-		id: UUID,
+		id: String,
 		message: Data,
 		deviceToken: String,
 		pushType: APNSPushType,

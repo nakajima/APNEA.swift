@@ -14,12 +14,12 @@ import UserNotifications
 import UserNotificationsUI
 
 struct ExpectedPush {
-	var id: UUID
+	var id: String
 	var date: Date
 }
 
 struct ReceivedPush: Identifiable {
-	var id: UUID
+	var id: String
 	var receivedAt: Date
 }
 
@@ -29,14 +29,14 @@ struct ScheduledPushStatusView: View {
 	}
 
 	var client: APNEAClient
-	var uuid: UUID
+	var uuid: String
 
 	@State private var status: LoadStatus = .loading
 
 	var body: some View {
 		if case let .done(status) = status {
 			VStack(alignment: .leading) {
-				Text(status.id.uuidString)
+				Text(status.id)
 					.foregroundStyle(.secondary)
 					.bold()
 					.font(.caption)
@@ -133,7 +133,7 @@ struct ContentView: View {
 	@State private var expectingPush: ExpectedPush?
 	@State private var repeats: Double = 1
 	@State private var interval: Double = 5.0
-	@State private var knownIDs: [UUID] = []
+	@State private var knownIDs: [String] = []
 	@State private var liveActivityStatus: LiveActivityStatus = .unknown
 
 	@State private var statusIsExpanded = true
@@ -371,7 +371,7 @@ struct ContentView: View {
 
 		guard let pushToken else { return }
 
-		let id = UUID()
+		let id = UUID().uuidString
 
 		Task {
 			let alertMessage = APNSAlertNotification(
@@ -405,7 +405,7 @@ struct ContentView: View {
 
 				await MainActor.run {
 					withAnimation {
-						expectingPush = ExpectedPush(id: UUID(), date: date)
+						expectingPush = ExpectedPush(id: UUID().uuidString, date: date)
 						knownIDs.append(id)
 					}
 				}
@@ -426,13 +426,12 @@ struct ContentView: View {
 			pushType: .token
 		)
 
-		Task {
-			try? await Task.sleep(for: .seconds(1))
-			await activity.end(nil)
-		}
-
 		for await update in Activity<APNEALiveActivityAttributes>.pushToStartTokenUpdates {
-			liveActivityStatus = .active(currentActivity, update.map { String(format: "%02x", $0) }.joined())
+			liveActivityStatus = .active(nil, update.map { String(format: "%02x", $0) }.joined())
+
+			if activity.activityState != .ended {
+				await activity.end(nil)
+			}
 		}
 	}
 
@@ -453,7 +452,7 @@ struct ContentView: View {
 	}
 
 	func scheduleLiveActivityPush() {
-		let id = UUID()
+		let id = UUID().uuidString
 		let date = Date().addingTimeInterval(interval)
 
 		guard case let .active(_, token) = liveActivityStatus else {

@@ -88,10 +88,6 @@ final class App {
 			)
 		)
 
-		if let logLevel = Logger.Level(rawValue: App.env("LOG_LEVEL")) {
-			application.logger.logLevel = logLevel
-		}
-
 		scheduler.scheduler.logger = application.logger
 
 		try await application.runService()
