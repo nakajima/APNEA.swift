@@ -26,6 +26,15 @@ import Observation
 		return try? JSONDecoder().decode(ScheduledPushStatus.self, from: data)
 	}
 
+	public func cancel(id: String) async throws {
+		let url = url.appending(path: "status/\(id)/cancel")
+
+		var request = URLRequest(url: url)
+		request.httpMethod = "POST"
+
+		_ = try await URLSession.shared.data(for: request)
+	}
+
 	public func statuses(ids: [String]) async throws -> [String: ScheduledPushStatus] {
 		let url = url.appending(path: "statuses")
 
