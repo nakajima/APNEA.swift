@@ -7,8 +7,8 @@
 
 import Foundation
 
-public enum ScheduledPushStatus: Codable, Identifiable, Equatable {
-	public struct Scheduled: Codable, Identifiable, Equatable {
+public enum ScheduledPushStatus: Codable, Identifiable, Equatable, Sendable {
+	public struct Scheduled: Codable, Identifiable, Equatable, Sendable {
 		public var id: String
 		public var remainingOccurrences: Int
 		public var interval: TimeInterval
