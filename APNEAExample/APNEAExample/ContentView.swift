@@ -374,21 +374,20 @@ struct ContentView: View {
 		let id = UUID().uuidString
 
 		Task {
-			let alertMessage = APNSAlertNotification(
-				alert: .init(title: .raw(Date().formatted()), body: .raw(Date().formatted())),
-				expiration: .immediately,
-				priority: .immediately,
-				topic: Bundle.main.bundleIdentifier!
-			)
-
-			let message = try JSONEncoder().encode(alertMessage)
-
 			do {
 				try await client.schedule(.init(
 					id: id,
-					message: message,
 					deviceToken: pushToken.map { String(format: "%02x", $0) }.joined(),
 					pushType: .alert,
+					message: APNSAlertNotification(
+						alert: .init(
+							title: .raw(Date().formatted()),
+							body: .raw(Date().formatted())
+						),
+						expiration: .immediately,
+						priority: .immediately,
+						topic: Bundle.main.bundleIdentifier!
+					),
 					expiration: .immediately,
 					priority: .immediately,
 					apnsID: nil,
@@ -475,14 +474,12 @@ struct ContentView: View {
 				)
 			)
 
-			let message = try JSONEncoder().encode(liveActivityMessage)
-
 			do {
 				try await client.schedule(.init(
 					id: id,
-					message: message,
 					deviceToken: token,
 					pushType: .liveactivity,
+					message: liveActivityMessage,
 					expiration: .immediately,
 					priority: .immediately,
 					apnsID: nil,

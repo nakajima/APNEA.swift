@@ -5,9 +5,66 @@
 //  Created by Pat Nakajima on 3/31/24.
 //
 
+import APNSCore
 import APNEACore
 import Foundation
 import Observation
+
+public struct PushNotificationRequestContainer<Message: APNSMessage> {
+	public struct Payload: Encodable, Sendable {
+		public init() {}
+	}
+
+	public var id: String
+	public var deviceToken: String
+	public var pushType: APNSPushType
+	public var expiration: APNSNotificationExpiration?
+	public var priority: APNSPriority?
+	public var apnsID: UUID?
+	public var topic: String
+	public var collapseID: String?
+	public var message: APNSMessage
+	public var schedule: PushNotificationSchedule
+
+	public init(
+		id: String,
+		deviceToken: String,
+		pushType: APNSPushType,
+		message: Message,
+		expiration: APNSNotificationExpiration? = nil,
+		priority: APNSPriority? = nil,
+		apnsID: UUID? = nil,
+		topic: String,
+		collapseID: String? = nil,
+		schedule: PushNotificationSchedule
+	) {
+		self.id = id
+		self.deviceToken = deviceToken
+		self.pushType = pushType
+		self.expiration = expiration
+		self.priority = priority
+		self.apnsID = apnsID
+		self.topic = topic
+		self.collapseID = collapseID
+		self.message = message
+		self.schedule = schedule
+	}
+
+	func toRequest() throws -> PushNotificationRequest {
+		PushNotificationRequest(
+			id: id,
+			message: try JSONEncoder().encode(message),
+			deviceToken: deviceToken,
+			pushType: pushType,
+			expiration: expiration,
+			priority: priority,
+			apnsID: apnsID,
+			topic: topic,
+			collapseID: collapseID,
+			schedule: schedule
+		)
+	}
+}
 
 @Observable public final class APNEAClient: Sendable {
 	public enum Error: Swift.Error {}
@@ -46,8 +103,8 @@ import Observation
 		return try JSONDecoder().decode([String: ScheduledPushStatus].self, from: data)
 	}
 
-	public func schedule(_ pushNotificationRequest: PushNotificationRequest) async throws {
-		let data = try encoder.encode(pushNotificationRequest)
+	public func schedule<Message: APNSMessage>(_ container: PushNotificationRequestContainer<Message>) async throws {
+		let data = try encoder.encode(container.toRequest())
 
 		let url = url.appending(path: "schedule")
 		var request = URLRequest(url: url)
