@@ -67,7 +67,13 @@ struct PushNotificationJob: Job {
 		logger.debug("sending \(String(data: parameters.payload, encoding: .utf8))")
 
 		let headers = try await headers(for: request)
-		let response = try await APNS.send(byteBuffer: ByteBuffer(bytes: request.message), headers: headers, deviceToken: request.deviceToken)
+
+		do {
+			let response = try await APNS.send(byteBuffer: ByteBuffer(bytes: request.message), headers: headers, deviceToken: request.deviceToken)
+			logger.info("response: \(response)")
+		} catch {
+			logger.info("error: \(error)")
+		}
 	}
 
 	init(id: String, parameters: Parameters) {
