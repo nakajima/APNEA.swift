@@ -62,9 +62,8 @@ struct PushNotificationJob: Job {
 
 	func perform() async throws {
 		let request = try JSONDecoder().decode(PushNotificationRequest.self, from: parameters.payload)
-		let logger = self.logger ?? Logger(label: "Jobsy")
 
-		logger.debug("sending \(String(data: parameters.payload, encoding: .utf8))")
+		print("sending \(String(data: parameters.payload, encoding: .utf8) ?? "parameters")")
 
 		let headers = try await headers(for: request)
 
