@@ -1,5 +1,5 @@
 {
-  "originHash" : "6cfc854ec6cf03672a941d48f31e940ba8d47b6dabb3a22f902d18093e8192e6",
+  "originHash" : "58758ac043bf83f6cbd2f8c9c236763689f44c9b855eab8b00d214dd5833cb88",
   "pins" : [
     {
       "identity" : "apnswift",
@@ -34,14 +34,6 @@
       "state" : {
         "branch" : "main",
         "revision" : "5f9a76e15dc3f108afefc929c316df95da0fa909"
-      }
-    },
-    {
-      "identity" : "messagepack",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Flight-School/MessagePack",
-      "state" : {
-        "revision" : "bbc5ab6362db234f2051e73e67296ebf5c3d2042"
       }
     },
     {

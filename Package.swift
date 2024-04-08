@@ -13,7 +13,6 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird", revision: "a72b6132f06142bc3539f1f5102e779d456b677e"),
 		.package(url: "https://github.com/nakajima/APNSwift", branch: "send-raw"),
-		.package(url: "https://github.com/Flight-School/MessagePack", revision: "bbc5ab6362db234f2051e73e67296ebf5c3d2042"),
 		.package(url: "https://github.com/nakajima/Jobsy.swift", branch: "main"),
 	],
 	targets: [
@@ -34,7 +33,6 @@ let package = Package(
 			name: "Server",
 			dependencies: [
 				"APNEACore",
-				"MessagePack",
 				"Jobsy.swift",
 				.product(name: "Hummingbird", package: "hummingbird"),
 				.product(name: "HummingbirdJobs", package: "hummingbird"),
